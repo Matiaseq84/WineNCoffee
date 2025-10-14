@@ -1,0 +1,33 @@
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #D4B97D;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    flex-wrap: wrap;
+}
+
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.navbar a:hover {
+    color: #2c2c2c;
+    transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+    }
+
+    .navbar a {
+        margin: 8px 0;
+    }
+}
