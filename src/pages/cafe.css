@@ -1,0 +1,179 @@
+:root{
+  /* mismo glow que navbar/home */
+  --glow-border: rgba(212,185,125,.9);
+  --glow-ring:   0 0 0 2px rgba(212,185,125,.35);
+  --glow:        0 0 14px rgba(212,185,125,.7);
+
+  --vino-oscuro: #2c0f18;
+  --bg-amarillo: #fff4e4;
+  --texto: #fff;
+}
+
+/* ---------- HERO CAFÉ ---------- */
+.cafe-page { color: var(--texto); }
+
+.hero-cafe{
+  position: relative;
+  min-height: 45vh;                 /* franja a lo ancho */
+  background-image: url('/cafe.jpg'); /* poné la imagen en /public/cafe.jpg */
+  background-size: cover;
+  background-position: center;
+  display: grid;
+  place-items: center;
+}
+.hero-overlay{
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.35);
+}
+
+.hero-strip{
+  position: relative; z-index: 1;
+  background: rgba(44,15,24,.55);   /* #2c0f18 translúcido */
+  border: 1px solid transparent;
+  border-radius: 16px;
+  padding: 18px 24px;
+  text-align: center;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: box-shadow .25s, border-color .25s, transform .18s;
+}
+.hero-strip h1{ margin: 0 0 6px 0; font-weight: 800; font-size: clamp(28px,5vw,42px); }
+.hero-strip p{ margin: 0; font-size: clamp(14px,2.2vw,18px); }
+
+.glowable:hover,
+.glowable:focus-within{
+  border-color: var(--glow-border);
+  box-shadow: var(--glow-ring), var(--glow);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* ---------- SECCIONES ---------- */
+.cafe-section{
+  padding: 28px 16px;
+  background: var(--bg-amarillo);
+  color: #2b2b2b;
+}
+.section-title{
+  display: inline-block;
+  margin: 0 auto 14px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: rgba(44,15,24,.08);
+  color: #2b2b2b;
+  font-weight: 800;
+}
+
+/* ---------- CARRUSEL ---------- */
+.carousel{
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.car-btn{
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,.15);
+  background: #fff;
+  cursor: pointer;
+}
+.car-track{
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 8px 2px 12px;
+}
+.car-track::-webkit-scrollbar{ height: 8px; }
+.car-track::-webkit-scrollbar-thumb{ background: rgba(0,0,0,.15); border-radius: 999px; }
+
+.car-item{
+  min-width: 240px;
+  background: rgba(44,15,24,.12);
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 12px;
+  text-align: center;
+}
+.car-img{
+  height: 110px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(44,15,24,.3), rgba(44,15,24,.55));
+  margin-bottom: 8px;
+}
+
+/* ---------- LISTADO CON SIDEBAR ---------- */
+.cafe-listado{
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 18px;
+  padding: 24px 16px 36px;
+  background: var(--bg-amarillo);
+  color: #2b2b2b;
+}
+
+.sidebar{
+  background: rgba(44,15,24,.08);
+  border: 1px solid rgba(44,15,24,.18);
+  border-radius: 14px;
+  padding: 16px;
+}
+.sidebar h3{ margin-top: 0; }
+.filtros{ display: grid; gap: 8px; }
+.filtro{
+  display: block;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  color: #2b2b2b;
+  text-decoration: none;
+  background: rgba(44,15,24,.04);
+  transition: border-color .25s, box-shadow .25s, transform .18s, background .2s;
+}
+.filtro:hover{ background: rgba(44,15,24,.08); }
+
+.productos{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 16px;
+}
+.card{
+  background: rgba(44,15,24,.08);
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+.card-img{
+  height: 220px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(44,15,24,.18), rgba(44,15,24,.35));
+}
+.card-title{ font-weight: 700; }
+.card-price{ font-weight: 800; color: #6e0c2b; }
+
+.btn-add{
+  justify-self: start;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: #D4B97D;
+  color: var(--vino-oscuro);
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .25s, box-shadow .25s, transform .18s, background .2s;
+}
+.btn-add:hover{ background: #e0c68d; }
+
+/* responsive */
+@media (max-width: 1024px){
+  .productos{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 720px){
+  .cafe-listado{ grid-template-columns: 1fr; }
+  .productos{ grid-template-columns: 1fr; }
+}
