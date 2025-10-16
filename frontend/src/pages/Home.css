@@ -1,0 +1,83 @@
+:root{
+  --glow-border: rgba(212,185,125,.9);
+  --glow-ring:   0 0 0 2px rgba(212,185,125,.35);
+  --glow:        0 0 14px rgba(212,185,125,.7);
+}
+
+
+.hero{
+  position: relative;
+  background-image: url('/vino5.png');
+  background-size: cover;
+  background-position: center;
+  min-height: 80vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+}
+
+
+.hero-overlay{
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.3);
+}
+
+
+.hero-strip{
+  position: relative;
+  z-index: 2;
+  margin: 0 16px;
+  max-width: 860px;
+  padding: 18px 22px;
+  background: rgba(44,15,24,.55);   
+  border: 1px solid transparent;
+  border-radius: 16px;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: box-shadow .25s, border-color .25s, transform .2s;
+}
+
+/* glow al pasar por arriba */
+.hero-strip:hover,
+.hero-strip:focus-within{
+  border-color: var(--glow-border);
+  box-shadow: var(--glow-ring), var(--glow);
+  transform: translateY(-1px);
+}
+
+.hero-strip h1{
+  margin: 0 0 10px 0;
+  font-size: clamp(28px, 5vw, 56px);
+  font-weight: 800;
+}
+
+.hero-strip p{
+  margin: 0 0 18px 0;
+  font-size: clamp(14px, 2.2vw, 18px);
+}
+
+
+.btn-hero{
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background-color: #D4B97D;
+  color: #2c0f18;
+  font-weight: 700;
+  cursor: pointer;
+  transition: box-shadow .25s, border-color .25s, transform .2s, background-color .2s;
+}
+.btn-hero:hover,
+.btn-hero:focus-visible{
+  border-color: var(--glow-border);
+  box-shadow: var(--glow-ring), var(--glow);
+  transform: translateY(-1px);
+  background-color: #e0c68d;
+  outline: none;
+}
+
+
