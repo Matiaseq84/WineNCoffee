@@ -1,45 +1,119 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import "./carrito.css";
 
-const CartCtx = createContext(null);
+export default function Carrito() {
+  // 👇 Arranca vacío; podés probar con productos de ejemplo descomentando el array de abajo
+  const [items, setItems] = useState([
+    // { id: 1, name: "Café Ruanda 250gr", price: 37000, img: "/coffee.png", qty: 1 },
+    // { id: 2, name: "Malbec Reserva 750ml", price: 49950, img: "/Vino-logo.png", qty: 1 },
+  ]);
 
-export function CartProvider({ children }) {
-  const [items, setItems] = useState([]); // {id, name, price, qty, img}
-  const [isOpen, setIsOpen] = useState(false);
+  const total = useMemo(
+    () => items.reduce((n, it) => n + it.price * it.qty, 0),
+    [items]
+  );
 
-  const open  = () => setIsOpen(true);
-  const close = () => setIsOpen(false);
+  const inc = (id) =>
+    setItems((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, qty: p.qty + 1 } : p))
+    );
 
-  const addItem = (prod) => {
-    setItems((prev) => {
-      const idx = prev.findIndex(p => p.id === prod.id);
-      if (idx >= 0) {
-        const copy = [...prev];
-        copy[idx] = { ...copy[idx], qty: copy[idx].qty + 1 };
-        return copy;
-      }
-      return [...prev, { ...prod, qty: 1 }];
-    });
-    open();
-  };
+  const dec = (id) =>
+    setItems((prev) =>
+      prev.map((p) =>
+        p.id === id ? { ...p, qty: Math.max(1, p.qty - 1) } : p
+      )
+    );
 
-  const removeItem = (id) => setItems(prev => prev.filter(p => p.id !== id));
-  const dec = (id) => setItems(prev => prev.map(p => p.id === id ? { ...p, qty: Math.max(1, p.qty-1) } : p));
-  const inc = (id) => setItems(prev => prev.map(p => p.id === id ? { ...p, qty: p.qty+1 } : p));
+  const removeItem = (id) =>
+    setItems((prev) => prev.filter((p) => p.id !== id));
+
   const clear = () => setItems([]);
 
-  const totalQty = items.reduce((n, it) => n + it.qty, 0);
-  const subtotal = items.reduce((n, it) => n + (parseFloat((it.priceNum ?? 0)) * it.qty), 0);
+  return (
+    <div className="cart-page">
+      {/* HERO */}
+      <section className="hero-cart">
+        <div className="hero-overlay" />
+        <div className="hero-strip glowable">
+          <h1>Tu Carrito</h1>
+          <p>Revisá tus productos antes de confirmar la compra</p>
+        </div>
+      </section>
 
-  const value = useMemo(() => ({
-    items, addItem, removeItem, dec, inc, clear,
-    isOpen, open, close, totalQty, subtotal
-  }), [items, isOpen, subtotal, totalQty]);
+      {/* CONTENIDO */}
+      <section className="cart-content">
+        {/* LISTA */}
+        <div className="cart-list glowable">
+          {items.length === 0 ? (
+            <div className="cart-empty">
+              <p>Tu carrito está vacío.</p>
+              <a className="btn-cta" href="/cafe">Ver cafés</a>
+              <a className="btn-cta" href="/vino">Ver vinos</a>
+            </div>
+          ) : (
+            items.map((it) => (
+              <article key={it.id} className="cart-item">
+                <div className="cart-thumb">
+                  {it.img ? (
+                    <img src={it.img} alt={it.name} />
+                  ) : (
+                    <div className="thumb-placeholder" />
+                  )}
+                </div>
 
-  return <CartCtx.Provider value={value}>{children}</CartCtx.Provider>;
-}
+                <div className="cart-info">
+                  <h4 className="cart-title">{it.name}</h4>
+                  <div className="cart-price">$
+                    {it.price.toLocaleString("es-AR")}
+                  </div>
+                  <div className="cart-controls">
+                    <button className="qty-btn" onClick={() => dec(it.id)}>-</button>
+                    <span className="qty">{it.qty}</span>
+                    <button className="qty-btn" onClick={() => inc(it.id)}>+</button>
+                    <button className="remove-btn" onClick={() => removeItem(it.id)}>
+                      Quitar
+                    </button>
+                  </div>
+                </div>
 
-export function useCart() {
-  const ctx = useContext(CartCtx);
-  if (!ctx) throw new Error("useCart must be used inside <CartProvider>");
-  return ctx;
+                <div className="cart-subtotal">
+                  <span>Subtotal</span>
+                  <strong>$
+                    {(it.price * it.qty).toLocaleString("es-AR")}
+                  </strong>
+                </div>
+              </article>
+            ))
+          )}
+        </div>
+
+        {/* RESUMEN */}
+        <aside className="cart-summary glowable">
+          <h3>Resumen</h3>
+          <div className="sum-row">
+            <span>Productos</span>
+            <span>{items.length}</span>
+          </div>
+          <div className="sum-row">
+            <span>Envío</span>
+            <span>A calcular</span>
+          </div>
+          <hr />
+          <div className="sum-row total">
+            <span>Total</span>
+            <span>$
+              {total.toLocaleString("es-AR")}
+            </span>
+          </div>
+          <button className="btn-primary" disabled={items.length === 0}>
+            Finalizar compra
+          </button>
+          <button className="btn-secondary" onClick={clear} disabled={items.length === 0}>
+            Vaciar carrito
+          </button>
+        </aside>
+      </section>
+    </div>
+  );
 }

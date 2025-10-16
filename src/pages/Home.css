@@ -4,10 +4,10 @@
   --glow:        0 0 14px rgba(212,185,125,.7);
 }
 
-/* sección grande con la foto */
+
 .hero{
   position: relative;
-  background-image: url('/vino5.png'); /* viene de /public */
+  background-image: url('/vino5.png');
   background-size: cover;
   background-position: center;
   min-height: 80vh;
@@ -19,21 +19,21 @@
   text-align: center;
 }
 
-/* oscurece la imagen (igual que tu overlay inline) */
+
 .hero-overlay{
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,.3);
 }
 
-/* franja translúcida */
+
 .hero-strip{
   position: relative;
   z-index: 2;
   margin: 0 16px;
   max-width: 860px;
   padding: 18px 22px;
-  background: rgba(44,15,24,.55);     /* borgoña translúcido */
+  background: rgba(44,15,24,.55);   
   border: 1px solid transparent;
   border-radius: 16px;
   backdrop-filter: blur(2px);
@@ -41,7 +41,7 @@
   transition: box-shadow .25s, border-color .25s, transform .2s;
 }
 
-/* glow al pasar por arriba (o foco dentro) */
+/* glow al pasar por arriba */
 .hero-strip:hover,
 .hero-strip:focus-within{
   border-color: var(--glow-border);
@@ -60,7 +60,7 @@
   font-size: clamp(14px, 2.2vw, 18px);
 }
 
-/* botón con el mismo brillo */
+
 .btn-hero{
   padding: 10px 18px;
   border: 1px solid transparent;

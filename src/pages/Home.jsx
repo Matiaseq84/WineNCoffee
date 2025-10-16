@@ -1,15 +1,15 @@
-import "./home.css";
+import "./Home.css";
 
 function Home() {
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#f5f2ef' }}>
       
       
-      {/* HERO */}
+      
       <section className="hero">
         <div className="hero-overlay"></div>
 
-        {/* franja translúcida con glow */}
+        
         <div className="hero-strip">
           <h1>Bienvenido a Wine & Coffee</h1>
           <p>Disfrutá los mejores vinos y cafés directamente en tu casa</p>
@@ -17,7 +17,7 @@ function Home() {
         </div>
       </section>
 
-      {/* lo demás puede quedar como lo tenías */}
+      
         <section style={{ padding: '50px 20px', backgroundColor: '#d4b97d', textAlign: 'center' }}>
             <h2 style={{ marginBottom: '30px' }}>Nuestras Categorías</h2>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
