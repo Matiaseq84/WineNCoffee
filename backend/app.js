@@ -13,6 +13,9 @@ app.get("/", (req, res) => {
   res.send("Backend funcionando");
 });
 
+// servir archivos estáticos desde la carpeta 'public'
+app.use(express.static("public"));
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
