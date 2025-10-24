@@ -1,24 +1,10 @@
 import express from 'express';
+import { getProducts } from '../controllers/productController.js';
 
 const router = express.Router();
 
-let products_list = [
-    {
-        "product_id" : "1",
-        "name" : "café torrado",
-        "description" : "café molido",
-        "photo" : "/photo/foto_1.jpg",
-        "thumbnail" : "thumbnails/thumbnail_1.jpg",
-        "price" : "1200",
-        "category" : "café",
-        "subcategory" : "molido",
-        "stock" : "7"
-    }
-]
+router.get('/', getProducts);
 
-//rutas de productos
-router.get('/', function(req, res){
-    res.json(products_list);
-});
+// falta la prueba del controlador de productos
 
 export default router;

@@ -1,6 +1,9 @@
 import request from 'supertest';
-import app from '../app.js';
+import app from '../../app.js';
 
+// PRUEBAS UNITARIAS PARA LAS RUTAS DE /PRODUCT
+
+// prueba si la ruta devuelve un jason con por lo menos un producto
 describe('Rutas /admin', () => {
   it('GET /admin debe devolver un JSON con la lista de administradores', async () => {
     const res = await request(app).get('/admin');
@@ -14,3 +17,8 @@ describe('Rutas /admin', () => {
     expect(res.body[0]).toHaveProperty('password');
   });
 });
+
+//--------------------------------------------------------------
+
+// PRUEBAS DE INTERGRACIÓN PARA LAS RUTAS DE /PRODUCT
+
