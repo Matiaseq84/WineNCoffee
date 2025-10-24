@@ -1,0 +1,28 @@
+// instalar jest para probar las rutas
+// instalar supertest para probar los endpoints
+// con npm install --save-dev jest supertest
+//
+// configuración de jest
+//"type": "module",
+//"jest": { // configuración de jest para que trabaje con import y no con require();
+//  "testEnvironment": "node",
+//  "transform": {}
+  },
+//
+//
+// crear carpeta test
+// agregar script en package.json para que el comando corra el test
+// 
+// {
+//  "name": "backend",
+//  "version": "1.0.0",
+//  "main": "app.js",
+//  "type": "module",
+//  "scripts": {
+//    "dev": "nodemon app.js",
+//    "start": "node app.js",
+//    "test": "jest --watchAll"
+//  },
+//
+// corerr test una sola vez con npm test
+// si quiero correr las pruebas cada vez que cambia el codigo: npm test --watchAll
