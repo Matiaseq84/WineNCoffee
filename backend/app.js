@@ -1,12 +1,11 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-import product from "./src/routes/product.js";
-import admin from "./src/routes/admin.js";
+import admin from "./src/routes/adminRoutes.js";
+import product from "./src/routes/productRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
 
 app.use(cors());
 app.use(express.json());
