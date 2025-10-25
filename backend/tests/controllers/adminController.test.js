@@ -3,7 +3,7 @@ import { getAdmins } from '../../src/controllers/adminController.js';
 import * as db from '../../src/config/db.js';
 
 // Mock de supabase
-const mockData = [{ admin_id: 1, user_name: 'admin', password: '1234' }];
+const mockData = [{ admin_id: 1, user_name: 'admin1', password: '1234' }];
 
 // Reemplazamos db.supabase por un mock
 db.supabase.from = jest.fn(() => db.supabase);
@@ -48,3 +48,4 @@ describe('Controlador getAdmins (Unitario)', () => {
     });
   });
 });
+

@@ -17,6 +17,6 @@ router.post('/', postAdmin);
 
 router.put('/:id', updateAdmin);
 
-router.delete('/', deleteAdmin);
+router.delete('/:id', deleteAdmin);
 
 export default router;
