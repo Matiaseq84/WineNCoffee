@@ -1,7 +1,7 @@
 import { supabase } from '../config/db.js';
 import bcrypt from 'bcrypt';
 
-// POST /admin - Crear administrador
+// POST
 export const postAdmin = async (req, res) => {
   const { user_name, password } = req.body;
 
@@ -25,7 +25,7 @@ export const postAdmin = async (req, res) => {
   }
 };
 
-// GET /admin - Listar todos los administradores
+// GET
 export const getAdmins = async (req, res) => {
   try {
     const { data, error } = await supabase.from('admin').select('*');
@@ -41,7 +41,7 @@ export const getAdmins = async (req, res) => {
   }
 };
 
-// GET /admin/:id - Obtener administrador por ID
+// GET id
 export const getAdminById = async (req, res) => {
   const { id } = req.params;
 
@@ -66,7 +66,7 @@ export const getAdminById = async (req, res) => {
   }
 };
 
-// PUT /admin/:id - Actualizar administrador
+// PUT id
 export const updateAdmin = async (req, res) => {
   const { id } = req.params;
   const { user_name, password } = req.body;
@@ -98,7 +98,7 @@ export const updateAdmin = async (req, res) => {
   }
 };
 
-// DELETE /admin/:id - Eliminar administrador
+// DELETE
 export const deleteAdmin = async (req, res) => {
   const { id } = req.params;
 
