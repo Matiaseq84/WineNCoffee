@@ -1,6 +1,10 @@
+import { useCart } from "../context/CartContext";
 import "./cafe.css";
 
 function Cafe() {
+
+  const {addItem } = useCart();
+
   // Sidebar (placeholders)
   const filtros = [
     "Café en Granos",
@@ -24,8 +28,8 @@ function Cafe() {
   // Grid de productos (placeholders)
   const productos = new Array(8).fill(0).map((_, i) => ({
     id: i + 1,
-    nombre: `Café Ruanda | 250gr Intensidad ${i + 1}`,
-    precio: "$--.---,--",
+    name: `Café Ruanda | 250gr Intensidad ${i + 1}`,
+    price: "$--.---,--"
   }));
 
   return (
@@ -80,9 +84,9 @@ function Cafe() {
           {productos.map((p) => (
             <article key={p.id} className="card glowable">
               <div className="card-img" />
-              <h4 className="card-title">{p.nombre}</h4>
-              <div className="card-price">{p.precio}</div>
-              <button className="btn-add glowable">Agregar al carrito</button>
+              <h4 className="card-title">{p.name}</h4>
+              <div className="card-price">{p.price}</div>
+              <button className="btn-add glowable" onClick={() => addItem(p)}>Agregar al carrito</button>
             </article>
           ))}
         </main>

@@ -100,6 +100,16 @@
   transition: transform .25s, opacity .25s;
 }
 
+.cart-count {
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  padding: 0.2em 0.6em;
+  font-size: 0.8em;
+  margin-left: 4px;
+}
+
+
 .hamburger.is-open span:nth-child(1){ transform: translateY(8px) rotate(45deg); }
 .hamburger.is-open span:nth-child(2){ opacity: 0; }
 .hamburger.is-open span:nth-child(3){ transform: translateY(-8px) rotate(-45deg); }
