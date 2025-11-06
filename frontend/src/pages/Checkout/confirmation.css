@@ -1,0 +1,21 @@
+.confirmacion {
+  text-align: center;
+  background: #fff;
+  padding: 3rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-width: 500px;
+  margin: 2rem auto;
+}
+
+.confirmacion h2 {
+  color: #28a745;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.confirmacion p {
+  color: #444;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}

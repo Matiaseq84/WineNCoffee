@@ -1,15 +1,23 @@
 import { useMemo } from "react";
 import "./carrito.css";
 import { useCart } from "../context/CartContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Carrito() {
   const { items, addItem, removeItem, clear, inc, dec } = useCart();
+  const navigate = useNavigate();
 
   // Calcula el total de forma reactiva
   const total = useMemo(
     () => items.reduce((n, it) => n + (it.price || 0) * (it.qty || 0), 0),
     [items]
   );
+
+  const handleCheckout = () => {
+    if (items.length > 0) {
+      navigate("/checkout");
+    }
+  };
 
   return (
     <div className="cart-page">
@@ -96,7 +104,7 @@ export default function Carrito() {
             <span>Total</span>
             <span>${total.toLocaleString("es-AR")}</span>
           </div>
-          <button className="btn-primary" disabled={items.length === 0}>
+          <button className="btn-primary" disabled={items.length === 0} onClick={handleCheckout}>
             Finalizar compra
           </button>
           <button

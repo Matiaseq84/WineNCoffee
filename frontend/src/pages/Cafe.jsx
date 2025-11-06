@@ -1,11 +1,29 @@
+import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import "./cafe.css";
 
 function Cafe() {
+  const { addItem } = useCart();
+  const [productos, setProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const {addItem } = useCart();
+  // 🔹 Traer productos desde el backend
+  useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/product");
+        const data = await res.json();
+        setProductos(data);
+      } catch (err) {
+        console.error("Error al obtener productos:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Sidebar (placeholders)
+    fetchProductos();
+  }, []);
+
   const filtros = [
     "Café en Granos",
     "Café 125gr",
@@ -19,18 +37,7 @@ function Cafe() {
     "Todos los productos",
   ];
 
-  // Carrusel (placeholders)
-  const ofertas = new Array(8).fill(0).map((_, i) => ({
-    id: i + 1,
-    titulo: `Oferta ${i + 1}`,
-  }));
-
-  // Grid de productos (placeholders)
-  const productos = new Array(8).fill(0).map((_, i) => ({
-    id: i + 1,
-    name: `Café Ruanda | 250gr Intensidad ${i + 1}`,
-    price: "$--.---,--"
-  }));
+  if (loading) return <p className="loading">Cargando productos...</p>;
 
   return (
     <div className="cafe-page">
@@ -40,30 +47,6 @@ function Cafe() {
         <div className="hero-strip glowable">
           <h1>Coffee</h1>
           <p>Descubrí nuestros granos y blends seleccionados</p>
-        </div>
-      </section>
-
-      {/* CARRUSEL DE OFERTAS */}
-      <section className="cafe-section">
-        <h2 className="section-title glowable">Ofertas de café</h2>
-
-        <div className="carousel">
-          <button className="car-btn" onClick={() => scrollX("left")}>
-            ‹
-          </button>
-
-          <div id="car-track" className="car-track">
-            {ofertas.map((o) => (
-              <div key={o.id} className="car-item glowable">
-                <div className="car-img" />
-                <span>{o.titulo}</span>
-              </div>
-            ))}
-          </div>
-
-          <button className="car-btn" onClick={() => scrollX("right")}>
-            ›
-          </button>
         </div>
       </section>
 
@@ -81,26 +64,33 @@ function Cafe() {
         </aside>
 
         <main className="productos">
-          {productos.map((p) => (
-            <article key={p.id} className="card glowable">
-              <div className="card-img" />
-              <h4 className="card-title">{p.name}</h4>
-              <div className="card-price">{p.price}</div>
-              <button className="btn-add glowable" onClick={() => addItem(p)}>Agregar al carrito</button>
-            </article>
-          ))}
+          {productos.length > 0 ? (
+            productos
+              .filter((p) => p.category?.toLowerCase().includes("cafe"))
+              .map((p) => (
+                <article key={p.product_id} className="card glowable">
+                  <div
+                    className="card-img"
+                    style={{
+                      backgroundImage: `url(${p.thumbnail || p.photo})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  />
+                  <h4 className="card-title">{p.name}</h4>
+                  <div className="card-price">${p.price}</div>
+                  <button className="btn-add glowable" onClick={() => addItem(p)}>
+                    Agregar al carrito
+                  </button>
+                </article>
+              ))
+          ) : (
+            <p>No hay productos disponibles.</p>
+          )}
         </main>
       </section>
     </div>
   );
-}
-
-/* helpers: scroll simple del carrusel */
-function scrollX(dir) {
-  const el = document.getElementById("car-track");
-  if (!el) return;
-  const amount = 260; // ancho aproximado de cada item
-  el.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
 }
 
 export default Cafe;

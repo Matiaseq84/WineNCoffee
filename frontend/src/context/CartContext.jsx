@@ -1,4 +1,3 @@
-// src/context/CartContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
@@ -22,29 +21,60 @@ export function CartProvider({ children }) {
     }
   }, [items]);
 
+  // Función auxiliar para obtener el ID universal
+  const getId = (obj) => obj.id ?? obj.product_id;
+
   const addItem = (item) => {
-    setItems(prev => {
-      const found = prev.find(p => p.id === item.id);
+    setItems((prev) => {
+      const id = getId(item);
+      const found = prev.find((p) => getId(p) === id);
       if (found) {
-        return prev.map(p =>
-          p.id === item.id ? { ...p, qty: (p.qty || 1) + 1 } : p
+        return prev.map((p) =>
+          getId(p) === id ? { ...p, qty: (p.qty || 1) + 1 } : p
         );
       }
-      // garantizo que tenga qty numérico y price numérico
-      return [...prev, { ...item, qty: item.qty || 1, price: Number(item.price || item.priceString || 0) }];
+      return [
+        ...prev,
+        {
+          ...item,
+          id, // normalizamos para el futuro
+          qty: item.qty || 1,
+          price: Number(item.price || 0),
+        },
+      ];
     });
   };
 
-  const removeItem = (id) => setItems(prev => prev.filter(p => p.id !== id));
-  const clear = () => setItems([]);
-  const inc = (id) => setItems(prev => prev.map(p => p.id === id ? { ...p, qty: (p.qty || 1) + 1 } : p));
-  const dec = (id) => setItems(prev => prev.map(p => p.id === id ? { ...p, qty: Math.max(1, (p.qty || 1) - 1) } : p));
+  const removeItem = (id) =>
+    setItems((prev) => prev.filter((p) => getId(p) !== id));
 
-  const total = items.reduce((n, it) => n + (Number(it.price) || 0) * (it.qty || 0), 0);
+  const clear = () => setItems([]);
+
+  const inc = (id) =>
+    setItems((prev) =>
+      prev.map((p) =>
+        getId(p) === id ? { ...p, qty: (p.qty || 1) + 1 } : p
+      )
+    );
+
+  const dec = (id) =>
+    setItems((prev) =>
+      prev.map((p) =>
+        getId(p) === id ? { ...p, qty: Math.max(1, (p.qty || 1) - 1) } : p
+      )
+    );
+
+  const total = items.reduce(
+    (n, it) => n + (Number(it.price) || 0) * (it.qty || 0),
+    0
+  );
+
   const count = items.reduce((n, it) => n + (it.qty || 0), 0);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, clear, inc, dec, total, count }}>
+    <CartContext.Provider
+      value={{ items, addItem, removeItem, clear, inc, dec, total, count }}
+    >
       {children}
     </CartContext.Provider>
   );
