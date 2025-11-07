@@ -1,9 +1,12 @@
+// src/pages/Checkout/Profile.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
 import "./profile.css";
 
 function Profile() {
   const navigate = useNavigate();
+  const { setShippingCost } = useCart(); // setter global
 
   const [personalData, setPersonalData] = useState({
     nombre: "",
@@ -22,7 +25,7 @@ function Profile() {
     cp: "",
   });
 
-  const [envio, setEnvio] = useState(null);
+  const [envioLocal, setEnvioLocal] = useState(null); // para mostrar en esta pantalla
 
   const handlePersonalChange = (e) => {
     setPersonalData({ ...personalData, [e.target.name]: e.target.value });
@@ -33,93 +36,104 @@ function Profile() {
   };
 
   const calcularEnvio = () => {
-    if (!shippingData.cp || shippingData.cp.length < 4) {
+    if (!shippingData.cp || shippingData.cp.trim().length < 3) {
       alert("Ingresá un código postal válido.");
       return;
     }
-
-    // Calcular un costo de envío simulado
     const costo = Math.floor(Math.random() * (3500 - 1500 + 1)) + 1500;
-    setEnvio(costo);
+    setEnvioLocal(costo);
+    setShippingCost(costo); // actualiza contexto (Resume lo mostrará)
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Guardamos los datos del usuario, pero NO el costo de envío
+    // guardamos datos de usuario para que Resume pueda leerlos (opcional)
     localStorage.setItem(
       "userData",
       JSON.stringify({ personalData, shippingData })
     );
-
     navigate("/checkout/payment");
   };
 
   return (
     <div className="profile-container">
-      {/* Bloque 1 - Datos personales */}
       <div className="form-block">
         <h2>Datos Personales</h2>
-        <form className="identificacion-form">
-          <label>Nombre</label>
-          <input name="nombre" value={personalData.nombre} onChange={handlePersonalChange} required />
+        <form className="identificacion-form" onSubmit={(e) => e.preventDefault()}>
+          <div className="input-row">
+            <div className="input-group">
+              <label>Nombre</label>
+              <input name="nombre" value={personalData.nombre} onChange={handlePersonalChange} required />
+            </div>
 
-          <label>Apellido</label>
-          <input name="apellido" value={personalData.apellido} onChange={handlePersonalChange} required />
+            <div className="input-group">
+              <label>Apellido</label>
+              <input name="apellido" value={personalData.apellido} onChange={handlePersonalChange} required />
+            </div>
 
-          <label>Email</label>
-          <input type="email" name="email" value={personalData.email} onChange={handlePersonalChange} required />
+            <div className="input-group">
+              <label>Email</label>
+              <input type="email" name="email" value={personalData.email} onChange={handlePersonalChange} required />
+            </div>
 
-          <label>DNI</label>
-          <input name="dni" value={personalData.dni} onChange={handlePersonalChange} required />
+            <div className="input-group">
+              <label>DNI</label>
+              <input name="dni" value={personalData.dni} onChange={handlePersonalChange} required />
+            </div>
 
-          <label>Teléfono</label>
-          <input name="telefono" value={personalData.telefono} onChange={handlePersonalChange} required />
+            <div className="input-group">
+              <label>Teléfono</label>
+              <input name="telefono" value={personalData.telefono} onChange={handlePersonalChange} required />
+            </div>
+          </div>
         </form>
       </div>
 
-      {/* Bloque 2 - Datos de envío */}
       <div className="form-block">
         <h2>Datos de Envío</h2>
         <form className="envio-form" onSubmit={handleSubmit}>
-          <label>Calle</label>
-          <input name="calle" value={shippingData.calle} onChange={handleShippingChange} required />
+          <div className="input-row">
+            <div className="input-group">
+              <label>Calle</label>
+              <input name="calle" value={shippingData.calle} onChange={handleShippingChange} required />
+            </div>
 
-          <label>Altura</label>
-          <input name="altura" value={shippingData.altura} onChange={handleShippingChange} required />
+            <div className="input-group">
+              <label>Altura</label>
+              <input name="altura" value={shippingData.altura} onChange={handleShippingChange} required />
+            </div>
 
-          <label>Piso / Dpto</label>
-          <input name="piso" value={shippingData.piso} onChange={handleShippingChange} placeholder="Opcional" />
+            <div className="input-group">
+              <label>Piso / Dpto</label>
+              <input name="piso" value={shippingData.piso} onChange={handleShippingChange} placeholder="Opcional" />
+            </div>
 
-          <label>Ciudad</label>
-          <input name="ciudad" value={shippingData.ciudad} onChange={handleShippingChange} required />
+            <div className="input-group">
+              <label>Ciudad</label>
+              <input name="ciudad" value={shippingData.ciudad} onChange={handleShippingChange} required />
+            </div>
 
-          <label>Provincia</label>
-          <input name="provincia" value={shippingData.provincia} onChange={handleShippingChange} required />
+            <div className="input-group">
+              <label>Provincia</label>
+              <input name="provincia" value={shippingData.provincia} onChange={handleShippingChange} required />
+            </div>
 
-          <label>Código Postal</label>
-          <div className="cp-section">
-            <input
-              name="cp"
-              value={shippingData.cp}
-              onChange={handleShippingChange}
-              placeholder="Ej. 1425"
-              required
-            />
-            <button type="button" onClick={calcularEnvio} className="btn-cp">
-              Calcular envío
-            </button>
+            <div className="input-group">
+              <label>Código Postal</label>
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                <input name="cp" value={shippingData.cp} onChange={handleShippingChange} placeholder="Ej. 1425" required />
+                <button type="button" onClick={calcularEnvio} className="btn-cp">Calcular envío</button>
+              </div>
+            </div>
           </div>
 
-          {envio && (
-            <p className="envio-info">
-              Costo de envío estimado: <strong>${envio.toLocaleString()}</strong>
-            </p>
+          {envioLocal && (
+            <p className="envio-info">Costo de envío estimado: <strong>${envioLocal.toLocaleString()}</strong></p>
           )}
 
-          <button type="submit" className="btn-next">
-            Ir al pago
-          </button>
+          <div style={{ marginTop: "1rem" }}>
+            <button type="submit" className="btn-next">Ir al pago</button>
+          </div>
         </form>
       </div>
     </div>

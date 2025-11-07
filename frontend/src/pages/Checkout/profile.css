@@ -1,88 +1,69 @@
+/* profile.css */
+body {
+  color: black;
+}
 .profile-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 2rem;
-  max-width: 700px;
-  margin: 0 auto;
+  max-width: 1000px;
+  margin: 24px auto;
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+  box-sizing: border-box;
 }
 
 .form-block {
   background: #fff;
-  border-radius: 12px;
-  padding: 1.5rem 2rem;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  overflow: hidden;
 }
 
-.form-block h2 {
-  font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 1rem;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 0.5rem;
+.input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-form {
+.input-group {
+  flex: 1 1 220px;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 6px;
 }
 
-label {
-  font-weight: 500;
-  color: #444;
+.input-group label {
+  font-size: 0.9rem;
+  color: #333;
 }
 
-input {
-  padding: 0.6rem 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+.input-group input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
   font-size: 1rem;
-  outline: none;
-}
-
-input:focus {
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 1px #8b5cf6;
-}
-
-.cp-section {
-  display: flex;
-  gap: 0.6rem;
-  align-items: center;
+  box-sizing: border-box;
 }
 
 .btn-cp {
-  background: #8b5cf6;
-  color: white;
+  background: #d4b97d;
   border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-cp:hover {
-  background: #7c3aed;
-}
-
-.envio-info {
-  margin-top: 0.8rem;
-  color: #222;
 }
 
 .btn-next {
-  background: #16a34a;
-  color: white;
+  background: #6e0c2b;
+  color: #fff;
   border: none;
-  padding: 0.8rem;
-  border-radius: 6px;
-  margin-top: 1rem;
-  font-size: 1rem;
+  padding: 10px 14px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  margin-top: 8px;
 }
 
-.btn-next:hover {
-  background: #15803d;
+.envio-info {
+  margin-top: 10px;
+  font-weight: 600;
 }

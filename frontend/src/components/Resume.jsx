@@ -1,105 +1,63 @@
-import React, { useState, useContext, useEffect } from "react";
-import { CartContext } from "../context/CartContext";
+// src/components/Resume.jsx
+import React, { useEffect, useState } from "react";
+import { useCart } from "../context/CartContext";
 import "./Resume.css";
 
 const ResumenCompra = () => {
-  const { items, total } = useContext(CartContext);
+  const { items, total, shippingCost } = useCart();
   const [userData, setUserData] = useState(null);
-  const [shippingCost, setShippingCost] = useState(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("userData");
-    if (stored) {
-      setUserData(JSON.parse(stored));
-    }
+    if (stored) setUserData(JSON.parse(stored));
   }, []);
 
-  const handleCalculateShipping = () => {
-    if (!userData || !userData.shippingData?.cp) {
-      alert("No se encontró un código postal. Completá tus datos primero.");
-      return;
-    }
-
-    // Costo de envío aleatorio (solo visual)
-    const randomCost = Math.floor(Math.random() * (4000 - 1500 + 1)) + 1500;
-    setShippingCost(randomCost);
-  };
-
-  const subtotal = items.reduce(
-    (acc, item) => acc + item.price * (item.qty || 1),
-    0
-  );
-
+  const subtotal = items.reduce((acc, it) => acc + (Number(it.price) || 0) * (it.qty || 1), 0);
   const finalTotal = shippingCost ? subtotal + shippingCost : subtotal;
 
   return (
     <div className="resumen-compra">
       <h3>Resumen de tu compra</h3>
 
-      {/* Listado de productos */}
-      <ul className="resumen-lista">
-        {items.length === 0 ? (
-          <p>No hay productos en el carrito.</p>
-        ) : (
-          items.map((item) => (
+      {items.length === 0 ? (
+        <p>No hay productos en el carrito.</p>
+      ) : (
+        <ul className="resumen-lista">
+          {items.map((item) => (
             <li key={item.id}>
-              <span>
-                {item.name} x{item.qty}
-              </span>
-              <span>${item.price * item.qty}</span>
+              <div className="item-left">
+                <div className="item-title">{item.name}</div>
+                <div className="item-qty">x{item.qty}</div>
+              </div>
+              <div className="item-right">${(Number(item.price) * (item.qty || 1)).toLocaleString()}</div>
             </li>
-          ))
-        )}
-      </ul>
+          ))}
+        </ul>
+      )}
 
-      {/* Subtotal */}
-      <div className="subtotal">
+      <div className="subtotal-row">
         <span>Subtotal:</span>
         <strong>${subtotal.toLocaleString()}</strong>
       </div>
 
-      {/* Datos del usuario */}
+      <div className="envio-row">
+        <span>Envío:</span>
+        <strong>{shippingCost ? `$${shippingCost.toLocaleString()}` : "A calcular"}</strong>
+      </div>
+
       {userData && (
         <div className="user-data">
-          <h4>Datos del comprador</h4>
-          <p>
-            <strong>
-              {userData.personalData.nombre} {userData.personalData.apellido}
-            </strong>
-            <br />
-            {userData.personalData.email}
-            <br />
-            DNI: {userData.personalData.dni}
-            <br />
-            Tel: {userData.personalData.telefono}
-          </p>
-
           <h4>Datos de envío</h4>
           <p>
-            {userData.shippingData.calle} {userData.shippingData.altura},{" "}
-            {userData.shippingData.piso && `${userData.shippingData.piso}, `}
-            {userData.shippingData.ciudad} - {userData.shippingData.provincia}
-            <br />
+            {userData.shippingData.calle} {userData.shippingData.altura}
+            {userData.shippingData.piso ? `, ${userData.shippingData.piso}` : ""} <br />
+            {userData.shippingData.ciudad} - {userData.shippingData.provincia} <br />
             CP: {userData.shippingData.cp}
           </p>
         </div>
       )}
 
-      {/* Calcular envío */}
-      <div className="envio-section">
-        <button onClick={handleCalculateShipping} className="btn-envio">
-          Calcular envío
-        </button>
-
-        {shippingCost !== null && (
-          <p className="envio-info">
-            Envío estimado: <strong>${shippingCost.toLocaleString()}</strong>
-          </p>
-        )}
-      </div>
-
-      {/* Total final */}
-      <div className="total">
+      <div className="total-row">
         <span>Total:</span>
         <strong>${finalTotal.toLocaleString()}</strong>
       </div>
