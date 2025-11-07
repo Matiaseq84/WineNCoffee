@@ -1,14 +1,18 @@
-import React, { useState, useContext } from "react";
-import { CartContext } from "../context/CartContext";
+import React, { useState } from "react";
+import { useCart } from "../context/CartContext";
 import "./Resume.css";
 
 const ResumenCompra = () => {
-  const { cart } = useContext(CartContext);
+  const { items, total } = useCart(); // 🟢 usamos el hook que ya exportás
   const [postalCode, setPostalCode] = useState("");
-  const [shippingCost, setShippingCost] = useState(null);
+  const [shippingCost, setShippingCost] = useState(() => {
+    // Si ya calculó antes, recuperamos de localStorage
+    const saved = localStorage.getItem("shippingCost");
+    return saved ? Number(saved) : null;
+  });
 
-  const subtotal = cart.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+  const subtotal = items.reduce(
+    (acc, item) => acc + (item.price || 0) * (item.qty || 0),
     0
   );
 
@@ -19,30 +23,33 @@ const ResumenCompra = () => {
     }
     const randomCost = Math.floor(Math.random() * (4000 - 1000 + 1)) + 1000;
     setShippingCost(randomCost);
+    localStorage.setItem("shippingCost", randomCost);
   };
 
-  const total = shippingCost ? subtotal + shippingCost : subtotal;
+  const totalFinal = shippingCost ? subtotal + shippingCost : subtotal;
 
   return (
     <div className="resumen-compra">
       <h3>Resumen de tu compra</h3>
 
-      <ul className="resumen-lista">
-        {cart.length === 0 ? (
-          <p>No hay productos en el carrito.</p>
-        ) : (
-          cart.map((item) => (
-            <li key={item.id}>
-              <span>{item.name} x{item.quantity}</span>
-              <span>${item.price * item.quantity}</span>
+      {items.length === 0 ? (
+        <p>No hay productos en el carrito.</p>
+      ) : (
+        <ul className="resumen-lista">
+          {items.map((item) => (
+            <li key={item.id || item.product_id}>
+              <span>
+                {item.name} × {item.qty}
+              </span>
+              <span>${(item.price * item.qty).toLocaleString()}</span>
             </li>
-          ))
-        )}
-      </ul>
+          ))}
+        </ul>
+      )}
 
       <div className="subtotal">
         <span>Subtotal:</span>
-        <strong>${subtotal}</strong>
+        <strong>${subtotal.toLocaleString()}</strong>
       </div>
 
       <div className="cp-section">
@@ -60,14 +67,14 @@ const ResumenCompra = () => {
       {shippingCost !== null && (
         <div className="envio">
           <p>
-            Envío estimado: <strong>${shippingCost}</strong>
+            Envío estimado: <strong>${shippingCost.toLocaleString()}</strong>
           </p>
         </div>
       )}
 
       <div className="total">
         <span>Total:</span>
-        <strong>${total}</strong>
+        <strong>${totalFinal.toLocaleString()}</strong>
       </div>
     </div>
   );
