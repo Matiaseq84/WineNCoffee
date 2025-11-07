@@ -6,9 +6,9 @@ function CheckoutLayout() {
   const location = useLocation();
 
   const steps = [
-    { path: "/checkout/identificacion", label: "1. Identificación" },
-    { path: "/checkout/pago", label: "2. Pago" },
-    { path: "/checkout/confirmacion", label: "3. Confirmación" },
+    { path: "/checkout/profile", label: "1. Identificación" },
+    { path: "/checkout/payment", label: "2. Pago" },
+    { path: "/checkout/confirmation", label: "3. Confirmación" },
   ];
 
   return (

@@ -30,10 +30,11 @@ function AppRoutes() {
         <Route path="/vino" element={<Vino />} />
         <Route path="/producto/:id" element={<ProductDetail />} />
         <Route path="/carrito" element={<Carrito />} />
-        <Route path="/checkout" element={<Checkout/>}/>
-        <Route path="/profile" element= {<Profile/>}/>
-        <Route path="/payment" element= {<Payment/>}/>
-        <Route path="Confirmation" element= {<Confirmation/>}/>
+        <Route path="/checkout" element={<Checkout />}>
+          <Route path="profile" element= {<Profile />}/>
+          <Route path="payment" element= {<Payment />}/>
+          <Route path="confirmation" element= {<Confirmation />}/>
+        </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/admin" element={<AdminPanel />} />

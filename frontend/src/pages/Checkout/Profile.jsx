@@ -36,7 +36,7 @@ function Profile() {
       alert("Por favor, calculá el costo de envío antes de continuar.");
       return;
     }
-    navigate("/checkout/pago");
+    navigate("/checkout/payment");
   };
 
   return (
