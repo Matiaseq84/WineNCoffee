@@ -1,52 +1,35 @@
-/* Resume.css */
-.resumen-compra {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 14px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-  overflow: hidden;
-}
-
-.resumen-compra h3 {
-  margin: 0 0 10px 0;
-}
-
-.resumen-lista {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 12px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 260px;
-  overflow-y: auto; /* evita overflow de toda la página */
-}
-
-.resumen-lista li {
+.resumen-botones {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  background: #fafafa;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #eee;
+  margin-top: 1.5rem;
 }
 
-.item-left { display:flex; gap:12px; align-items:center; }
-.item-title { font-weight:600; }
-.item-qty { color:#666; }
-
-.subtotal-row,
-.envio-row,
-.total-row {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:8px;
-  padding-top:8px;
-  border-top:1px dashed #eee;
+.btn-volver,
+.btn-confirmar {
+  flex: 1;
+  margin: 0 0.3rem;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
-.total-row { font-size:1.1rem; font-weight:700; }
+.btn-volver {
+  background-color: #ddd;
+  color: #333;
+}
+
+.btn-volver:hover {
+  background-color: #ccc;
+}
+
+.btn-confirmar {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-confirmar:hover {
+  background-color: #0056b3;
+}

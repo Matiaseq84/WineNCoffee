@@ -10,7 +10,7 @@ function Profile() {
 
   const [personalData, setPersonalData] = useState({
     nombre: "",
-    apellido: "",
+    apellido: "", 
     email: "",
     dni: "",
     telefono: "",
@@ -50,7 +50,7 @@ function Profile() {
     // guardamos datos de usuario para que Resume pueda leerlos (opcional)
     localStorage.setItem(
       "userData",
-      JSON.stringify({ personalData, shippingData })
+      JSON.stringify({ personalData, shippingData, envioConfirmado: true })
     );
     navigate("/checkout/payment");
   };

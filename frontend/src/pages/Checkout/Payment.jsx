@@ -5,8 +5,33 @@ import "./payment.css";
 function Payment() {
   const navigate = useNavigate();
   const [metodo, setMetodo] = useState("credito");
+  const [datosTarjeta, setDatosTarjeta] = useState({
+    nombre: "",
+    numero: "",
+    vencimiento: "",
+    cvv: "",
+  });
+
+  const handleMetodoChange = (e) => {
+    const value = e.target.value;
+    setMetodo(value);
+    localStorage.setItem("metodoPago", value);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    const nuevosDatos = { ...datosTarjeta, [name]: value };
+    setDatosTarjeta(nuevosDatos);
+    localStorage.setItem("datosTarjeta", JSON.stringify(nuevosDatos));
+  };
 
   const handleNext = () => {
+    // Asegura que haya un método de pago antes de continuar
+    if (!metodo) {
+      alert("Seleccioná un método de pago antes de continuar.");
+      return;
+    }
+
     navigate("/checkout/confirmation");
   };
 
@@ -15,66 +40,76 @@ function Payment() {
       <h2>Método de pago</h2>
 
       <div className="metodos">
-        <label className="metodo-item">
-          <input
-            type="radio"
-            name="metodo"
-            value="credito"
-            checked={metodo === "credito"}
-            onChange={(e) => setMetodo(e.target.value)}
-          />
-          Tarjeta de crédito
-        </label>
-
-        <label className="metodo-item">
-          <input
-            type="radio"
-            name="metodo"
-            value="debito"
-            checked={metodo === "debito"}
-            onChange={(e) => setMetodo(e.target.value)}
-          />
-          Tarjeta de débito
-        </label>
-
-        <label className="metodo-item">
-          <input
-            type="radio"
-            name="metodo"
-            value="mercadopago"
-            checked={metodo === "mercadopago"}
-            onChange={(e) => setMetodo(e.target.value)}
-          />
-          Mercado Pago
-        </label>
+        {["credito", "debito", "mercadopago"].map((op) => (
+          <label className="metodo-item" key={op}>
+            <input
+              type="radio"
+              name="metodo"
+              value={op}
+              checked={metodo === op}
+              onChange={handleMetodoChange}
+            />
+            {op === "credito"
+              ? "Tarjeta de crédito"
+              : op === "debito"
+              ? "Tarjeta de débito"
+              : "Mercado Pago"}
+          </label>
+        ))}
       </div>
 
-      {/* Formulario para tarjeta */}
       {(metodo === "credito" || metodo === "debito") && (
         <div className="form-tarjeta slide-in">
           <h3>Datos de la tarjeta</h3>
           <form>
             <label>Nombre del titular</label>
-            <input type="text" placeholder="Ej: Juan Pérez" required />
+            <input
+              type="text"
+              name="nombre"
+              placeholder="Ej: Juan Pérez"
+              value={datosTarjeta.nombre}
+              onChange={handleInputChange}
+              required
+            />
 
             <label>Número de tarjeta</label>
-            <input type="text" placeholder="XXXX XXXX XXXX XXXX" required />
+            <input
+              type="text"
+              name="numero"
+              placeholder="XXXX XXXX XXXX XXXX"
+              value={datosTarjeta.numero}
+              onChange={handleInputChange}
+              required
+            />
 
             <div className="tarjeta-row">
               <div>
                 <label>Vencimiento</label>
-                <input type="text" placeholder="MM/AA" required />
+                <input
+                  type="text"
+                  name="vencimiento"
+                  placeholder="MM/AA"
+                  value={datosTarjeta.vencimiento}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
               <div>
                 <label>CVV</label>
-                <input type="text" placeholder="123" required />
+                <input
+                  type="text"
+                  name="cvv"
+                  placeholder="123"
+                  value={datosTarjeta.cvv}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
             </div>
           </form>
         </div>
       )}
 
-      {/* Información de Mercado Pago */}
       {metodo === "mercadopago" && (
         <div className="mercadopago-info fade-in">
           <h3>Pagá con tu cuenta de Mercado Pago</h3>
@@ -98,7 +133,7 @@ function Payment() {
       )}
 
       <button onClick={handleNext} className="btn-next">
-        Confirmar compra
+        Continuar
       </button>
     </div>
   );
