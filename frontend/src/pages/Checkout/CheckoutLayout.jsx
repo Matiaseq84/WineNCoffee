@@ -1,9 +1,19 @@
-import { Outlet, useLocation, Link } from "react-router-dom";
+// src/pages/Checkout/CheckoutLayout.jsx
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import ResumenCompra from "../../components/Resume";
 import "./CheckoutLayout.css";
 
 function CheckoutLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Redirigir automáticamente a /checkout/profile al entrar a /checkout
+  useEffect(() => {
+    if (location.pathname === "/checkout") {
+      navigate("/checkout/profile");
+    }
+  }, [location, navigate]);
 
   const steps = [
     { path: "/checkout/profile", label: "1. Identificación" },
@@ -13,16 +23,15 @@ function CheckoutLayout() {
 
   return (
     <div className="checkout-container">
-      {/* Barra de progreso o pasos */}
+      {/* Barra de progreso (solo visual) */}
       <nav className="checkout-steps">
         {steps.map((s) => (
-          <Link
+          <span
             key={s.path}
-            to={s.path}
             className={`step-link ${location.pathname === s.path ? "active" : ""}`}
           >
             {s.label}
-          </Link>
+          </span>
         ))}
       </nav>
 

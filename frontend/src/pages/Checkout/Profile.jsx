@@ -1,94 +1,142 @@
+// src/pages/Checkout/Profile.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
 import "./profile.css";
 
 function Profile() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const { setShippingCost } = useCart(); // setter global
+
+  const [personalData, setPersonalData] = useState({
     nombre: "",
-    apellido: "",
+    apellido: "", 
     email: "",
     dni: "",
     telefono: "",
-    direccion: "",
+  });
+
+  const [shippingData, setShippingData] = useState({
+    calle: "",
+    altura: "",
+    piso: "",
+    ciudad: "",
+    provincia: "",
     cp: "",
   });
 
-  const [envio, setEnvio] = useState(null);
+  const [envioLocal, setEnvioLocal] = useState(null); // para mostrar en esta pantalla
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handlePersonalChange = (e) => {
+    setPersonalData({ ...personalData, [e.target.name]: e.target.value });
+  };
+
+  const handleShippingChange = (e) => {
+    setShippingData({ ...shippingData, [e.target.name]: e.target.value });
   };
 
   const calcularEnvio = () => {
-    if (!formData.cp) return;
-    // 🔹 Simulamos un costo aleatorio entre 1500 y 3500
+    if (!shippingData.cp || shippingData.cp.trim().length < 3) {
+      alert("Ingresá un código postal válido.");
+      return;
+    }
     const costo = Math.floor(Math.random() * (3500 - 1500 + 1)) + 1500;
-    setEnvio(costo);
-
-    // Guardamos en localStorage para usarlo en el resumen
-    localStorage.setItem("shippingCost", costo);
+    setEnvioLocal(costo);
+    setShippingCost(costo); // actualiza contexto (Resume lo mostrará)
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!envio) {
-      alert("Por favor, calculá el costo de envío antes de continuar.");
-      return;
-    }
+    // guardamos datos de usuario para que Resume pueda leerlos (opcional)
+    localStorage.setItem(
+      "userData",
+      JSON.stringify({ personalData, shippingData, envioConfirmado: true })
+    );
     navigate("/checkout/payment");
   };
 
   return (
-    <form className="identificacion-form" onSubmit={handleSubmit}>
-      <h2>Datos Personales</h2>
+    <div className="profile-container">
+      <div className="form-block">
+        <h2>Datos Personales</h2>
+        <form className="identificacion-form" onSubmit={(e) => e.preventDefault()}>
+          <div className="input-row">
+            <div className="input-group">
+              <label>Nombre</label>
+              <input name="nombre" value={personalData.nombre} onChange={handlePersonalChange} required />
+            </div>
 
-      <label>Nombre</label>
-      <input name="nombre" value={formData.nombre} onChange={handleChange} required />
+            <div className="input-group">
+              <label>Apellido</label>
+              <input name="apellido" value={personalData.apellido} onChange={handlePersonalChange} required />
+            </div>
 
-      <label>Apellido</label>
-      <input name="apellido" value={formData.apellido} onChange={handleChange} required />
+            <div className="input-group">
+              <label>Email</label>
+              <input type="email" name="email" value={personalData.email} onChange={handlePersonalChange} required />
+            </div>
 
-      <label>Email</label>
-      <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+            <div className="input-group">
+              <label>DNI</label>
+              <input name="dni" value={personalData.dni} onChange={handlePersonalChange} required />
+            </div>
 
-      <label>DNI</label>
-      <input name="dni" value={formData.dni} onChange={handleChange} required />
-
-      <label>Teléfono</label>
-      <input name="telefono" value={formData.telefono} onChange={handleChange} required />
-
-      <label>Dirección</label>
-      <input name="direccion" value={formData.direccion} onChange={handleChange} required />
-
-      <label>Código Postal</label>
-      <div className="cp-section">
-        <input
-          name="cp"
-          value={formData.cp}
-          onChange={handleChange}
-          placeholder="Ej. 1425"
-          required
-        />
-        <button
-          type="button"
-          onClick={calcularEnvio}
-          className="btn-cp"
-        >
-          Calcular envío
-        </button>
+            <div className="input-group">
+              <label>Teléfono</label>
+              <input name="telefono" value={personalData.telefono} onChange={handlePersonalChange} required />
+            </div>
+          </div>
+        </form>
       </div>
 
-      {envio && (
-        <p className="envio-info">
-          Costo de envío estimado: <strong>${envio.toLocaleString()}</strong>
-        </p>
-      )}
+      <div className="form-block">
+        <h2>Datos de Envío</h2>
+        <form className="envio-form" onSubmit={handleSubmit}>
+          <div className="input-row">
+            <div className="input-group">
+              <label>Calle</label>
+              <input name="calle" value={shippingData.calle} onChange={handleShippingChange} required />
+            </div>
 
-      <button type="submit" className="btn-next">
-        Ir al pago
-      </button>
-    </form>
+            <div className="input-group">
+              <label>Altura</label>
+              <input name="altura" value={shippingData.altura} onChange={handleShippingChange} required />
+            </div>
+
+            <div className="input-group">
+              <label>Piso / Dpto</label>
+              <input name="piso" value={shippingData.piso} onChange={handleShippingChange} placeholder="Opcional" />
+            </div>
+
+            <div className="input-group">
+              <label>Ciudad</label>
+              <input name="ciudad" value={shippingData.ciudad} onChange={handleShippingChange} required />
+            </div>
+
+            <div className="input-group">
+              <label>Provincia</label>
+              <input name="provincia" value={shippingData.provincia} onChange={handleShippingChange} required />
+            </div>
+
+            <div className="input-group">
+              <label>Código Postal</label>
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                <input name="cp" value={shippingData.cp} onChange={handleShippingChange} placeholder="Ej. 1425" required />
+                <button type="button" onClick={calcularEnvio} className="btn-cp">Calcular envío</button>
+              </div>
+            </div>
+          </div>
+
+          {envioLocal && (
+            <p className="envio-info">Costo de envío estimado: <strong>${envioLocal.toLocaleString()}</strong></p>
+          )}
+
+          <div style={{ marginTop: "1rem" }}>
+            <button type="submit" className="btn-next">Ir al pago</button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
 

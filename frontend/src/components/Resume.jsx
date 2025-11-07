@@ -1,32 +1,29 @@
-import React, { useState } from "react";
+// src/components/Resume.jsx
+import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 import "./Resume.css";
 
 const ResumenCompra = () => {
-  const { items, total } = useCart(); // 🟢 usamos el hook que ya exportás
-  const [postalCode, setPostalCode] = useState("");
-  const [shippingCost, setShippingCost] = useState(() => {
-    // Si ya calculó antes, recuperamos de localStorage
-    const saved = localStorage.getItem("shippingCost");
-    return saved ? Number(saved) : null;
-  });
+  const { items, shippingCost } = useCart();
+  const [userData, setUserData] = useState(null);
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+  const navigate = useNavigate();
 
-  const subtotal = items.reduce(
-    (acc, item) => acc + (item.price || 0) * (item.qty || 0),
-    0
-  );
+  useEffect(() => {
+    const stored = localStorage.getItem("userData");
+    const payment = localStorage.getItem("paymentMethod");
 
-  const handleCalculateShipping = () => {
-    if (!postalCode) {
-      alert("Por favor, ingresá tu código postal.");
-      return;
-    }
-    const randomCost = Math.floor(Math.random() * (4000 - 1000 + 1)) + 1000;
-    setShippingCost(randomCost);
-    localStorage.setItem("shippingCost", randomCost);
+    if (stored) setUserData(JSON.parse(stored));
+    if (payment) setPaymentConfirmed(true);
+  }, []);
+
+  const subtotal = items.reduce((acc, it) => acc + (Number(it.price) || 0) * (it.qty || 1), 0);
+  const finalTotal = shippingCost ? subtotal + shippingCost : subtotal;
+
+  const handleConfirmPurchase = () => {
+    navigate("/checkout/confirmation");
   };
-
-  const totalFinal = shippingCost ? subtotal + shippingCost : subtotal;
 
   return (
     <div className="resumen-compra">
@@ -37,44 +34,63 @@ const ResumenCompra = () => {
       ) : (
         <ul className="resumen-lista">
           {items.map((item) => (
-            <li key={item.id || item.product_id}>
-              <span>
-                {item.name} × {item.qty}
-              </span>
-              <span>${(item.price * item.qty).toLocaleString()}</span>
+            <li key={item.id}>
+              <div className="item-left">
+                <div className="item-title">{item.name}</div>
+                <div className="item-qty">x{item.qty}</div>
+              </div>
+              <div className="item-right">
+                ${(Number(item.price) * (item.qty || 1)).toLocaleString()}
+              </div>
             </li>
           ))}
         </ul>
       )}
 
-      <div className="subtotal">
+      <div className="subtotal-row">
         <span>Subtotal:</span>
         <strong>${subtotal.toLocaleString()}</strong>
       </div>
 
-      <div className="cp-section">
-        <label htmlFor="cp">Código Postal:</label>
-        <input
-          id="cp"
-          type="text"
-          value={postalCode}
-          onChange={(e) => setPostalCode(e.target.value)}
-          placeholder="Ej: 1602"
-        />
-        <button onClick={handleCalculateShipping}>Calcular envío</button>
+      <div className="envio-row">
+        <span>Envío:</span>
+        <strong>{shippingCost ? `$${shippingCost.toLocaleString()}` : "A calcular"}</strong>
       </div>
 
-      {shippingCost !== null && (
-        <div className="envio">
+      {userData && (
+        <div className="user-data">
+          <h4>Datos de envío</h4>
           <p>
-            Envío estimado: <strong>${shippingCost.toLocaleString()}</strong>
+            {userData.shippingData.calle} {userData.shippingData.altura}
+            {userData.shippingData.piso ? `, ${userData.shippingData.piso}` : ""} <br />
+            {userData.shippingData.ciudad} - {userData.shippingData.provincia} <br />
+            CP: {userData.shippingData.cp}
           </p>
         </div>
       )}
 
-      <div className="total">
+      <div className="total-row">
         <span>Total:</span>
-        <strong>${totalFinal.toLocaleString()}</strong>
+        <strong>${finalTotal.toLocaleString()}</strong>
+      </div>
+
+      {/* --- BOTONES --- */}
+      <div className="resumen-botones">
+        <button
+          className="btn-volver"
+          onClick={() => navigate("/carrito")}
+        >
+          ← Volver al carrito
+        </button>
+
+        {paymentConfirmed && (
+          <button
+            className="btn-confirmar"
+            onClick={handleConfirmPurchase}
+          >
+            Confirmar compra
+          </button>
+        )}
       </div>
     </div>
   );
