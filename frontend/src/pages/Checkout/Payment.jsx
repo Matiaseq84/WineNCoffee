@@ -15,7 +15,7 @@ function Payment() {
   const handleMetodoChange = (e) => {
     const value = e.target.value;
     setMetodo(value);
-    localStorage.setItem("metodoPago", value);
+    localStorage.setItem("paymentMethod", value);
   };
 
   const handleInputChange = (e) => {

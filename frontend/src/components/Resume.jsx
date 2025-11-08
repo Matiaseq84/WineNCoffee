@@ -1,28 +1,28 @@
-// src/components/Resume.jsx
 import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Resume.css";
 
-const ResumenCompra = () => {
+const Resume = () => {
   const { items, shippingCost } = useCart();
-  const [userData, setUserData] = useState(null);
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation(); // para saber en qué vista estamos
 
   useEffect(() => {
-    const stored = localStorage.getItem("userData");
     const payment = localStorage.getItem("paymentMethod");
-
-    if (stored) setUserData(JSON.parse(stored));
     if (payment) setPaymentConfirmed(true);
   }, []);
 
-  const subtotal = items.reduce((acc, it) => acc + (Number(it.price) || 0) * (it.qty || 1), 0);
+  const subtotal = items.reduce(
+    (acc, it) => acc + (Number(it.price) || 0) * (it.qty || 1),
+    0
+  );
   const finalTotal = shippingCost ? subtotal + shippingCost : subtotal;
 
   const handleConfirmPurchase = () => {
-    navigate("/checkout/confirmation");
+    alert("✅ ¡Compra confirmada con éxito!");
+    navigate("/"); // redirigir o mantener según lo que definas
   };
 
   return (
@@ -54,40 +54,24 @@ const ResumenCompra = () => {
 
       <div className="envio-row">
         <span>Envío:</span>
-        <strong>{shippingCost ? `$${shippingCost.toLocaleString()}` : "A calcular"}</strong>
+        <strong>
+          {shippingCost ? `$${shippingCost.toLocaleString()}` : "A calcular"}
+        </strong>
       </div>
-
-      {userData && (
-        <div className="user-data">
-          <h4>Datos de envío</h4>
-          <p>
-            {userData.shippingData.calle} {userData.shippingData.altura}
-            {userData.shippingData.piso ? `, ${userData.shippingData.piso}` : ""} <br />
-            {userData.shippingData.ciudad} - {userData.shippingData.provincia} <br />
-            CP: {userData.shippingData.cp}
-          </p>
-        </div>
-      )}
 
       <div className="total-row">
         <span>Total:</span>
         <strong>${finalTotal.toLocaleString()}</strong>
       </div>
 
-      {/* --- BOTONES --- */}
       <div className="resumen-botones">
-        <button
-          className="btn-volver"
-          onClick={() => navigate("/carrito")}
-        >
+        <button className="btn-volver" onClick={() => navigate("/carrito")}>
           ← Volver al carrito
         </button>
 
-        {paymentConfirmed && (
-          <button
-            className="btn-confirmar"
-            onClick={handleConfirmPurchase}
-          >
+        {/* Mostrar solo en la vista de Confirmación */}
+        {location.pathname === "/checkout/confirmation" && paymentConfirmed && (
+          <button className="btn-confirmar" onClick={handleConfirmPurchase}>
             Confirmar compra
           </button>
         )}
@@ -96,4 +80,4 @@ const ResumenCompra = () => {
   );
 };
 
-export default ResumenCompra;
+export default Resume;
