@@ -159,3 +159,50 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ error: 'Error interno al eliminar el producto' });
   }
 };
+
+// Verificar si hay stock suficiente antes de confirmar la compra
+export const checkProductStock = async (productId, quantity) => {
+  try {
+    const { data, error } = await supabase
+      .from("product")
+      .select("stock, name")
+      .eq("product_id", productId)
+      .single();
+
+    if (error) throw new Error(`Error al obtener stock del producto ${productId}`);
+
+    if (!data || data.stock < quantity) {
+      throw new Error(
+        `Stock insuficiente para el producto "${data?.name || productId}". Disponible: ${data?.stock || 0}`
+      );
+    }
+
+    return true;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const decrementProductStock = async (productId, quantity) => {
+  try {
+    // Obtener stock actual
+    const { data: product, error: fetchError } = await supabase
+      .from("product")
+      .select("stock")
+      .eq("product_id", productId)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    const newStock = Math.max(0, (product?.stock || 0) - quantity);
+
+    const { error: updateError } = await supabase
+      .from("product")
+      .update({ stock: newStock })
+      .eq("product_id", productId);
+
+    if (updateError) throw updateError;
+  } catch (err) {
+    throw err;
+  }
+};
