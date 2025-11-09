@@ -67,3 +67,22 @@ body {
   margin-top: 10px;
   font-weight: 600;
 }
+
+.error-text {
+  color: #e63946;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  display: block;
+}
+
+.general-error {
+  margin-top: 10px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.envio-info {
+  margin-top: 10px;
+  color: #1d3557;
+  font-weight: 500;
+}
