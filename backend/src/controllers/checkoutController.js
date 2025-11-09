@@ -1,13 +1,14 @@
 import { supabase } from "../config/db.js";
+import { checkProductStock, decrementProductStock } from "./productController.js";
 
 export const createCheckout = async (req, res) => {
   try {
-    const { cliente, direccion, carrito, metodoPago } = req.body;
+    const { cliente, direccion, carrito, metodoPago, total } = req.body;
 
     console.log("🧾 Datos recibidos del frontend:", { cliente, direccion, carrito, metodoPago });
 
     // ========================
-    // 1️⃣ Insertar cliente
+    // 1️⃣ Insertar o reutilizar cliente existente
     // ========================
     const { data: existingClient, error: searchError } = await supabase
       .from("client")
@@ -15,11 +16,13 @@ export const createCheckout = async (req, res) => {
       .eq("dni", cliente.dni)
       .single();
 
+    if (searchError && searchError.code !== "PGRST116") throw searchError;
+
     let clientId;
 
     if (existingClient) {
       clientId = existingClient.client_id;
-      console.log("Cliente ya existente con ID:", clientId);
+      console.log("👤 Cliente ya existente con ID:", clientId);
     } else {
       const { data: newClient, error: insertClientError } = await supabase
         .from("client")
@@ -36,7 +39,6 @@ export const createCheckout = async (req, res) => {
         .single();
 
       if (insertClientError) throw insertClientError;
-
       clientId = newClient.client_id;
       console.log("✅ Nuevo cliente insertado:", clientId);
     }
@@ -61,16 +63,67 @@ export const createCheckout = async (req, res) => {
 
     if (addressError) throw addressError;
 
-    console.log("✅ Dirección insertada:", newAddress.address_id);
+    console.log("📍 Dirección insertada:", newAddress.address_id);
 
+    // ========================
+    // 3️⃣ Crear la orden principal
+    // ========================
+    const { data: newOrder, error: orderError } = await supabase
+      .from("orders")
+      .insert([
+        {
+          client_id: clientId,
+          order_date: new Date().toISOString(),
+          amount: total,
+          status: "pending",
+        },
+      ])
+      .select()
+      .single();
+
+    if (orderError) throw orderError;
+    const orderId = newOrder.order_id;
+    console.log("🆕 Orden creada:", orderId);
+
+    // ========================
+    // 4️⃣ Insertar ítems del pedido y actualizar stock
+    // ========================
+    for (const item of carrito) {
+      const productId = item.product_id || item.id;
+      const quantity = item.qty;
+
+      // a) Verificar stock
+      await checkProductStock(productId, quantity);
+
+      // b) Insertar ítem del pedido
+      const { error: itemError } = await supabase
+        .from("order_items")
+        .insert([
+          {
+            order_id: orderId,
+            product_id: productId,
+            quantity,
+          },
+        ]);
+
+      if (itemError) throw itemError;
+
+      // c) Descontar stock
+      await decrementProductStock(productId, quantity);
+      console.log(`📦 Stock descontado correctamente para producto ${productId}`);
+    }
+
+    // ========================
+    // 5️⃣ Respuesta final
+    // ========================
     return res.status(200).json({
       success: true,
-      message: "Cliente y dirección registrados correctamente.",
+      message: "Cliente, dirección, orden e ítems registrados correctamente.",
+      orderId,
       clientId,
-      addressId: newAddress.address_id,
     });
   } catch (error) {
-    console.error("❌ Error en createCheckout:", error);
+    console.error("Error en createCheckout:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
