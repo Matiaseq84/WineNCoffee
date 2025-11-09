@@ -1,13 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import { confirmCheckout } from "../services/checkoutService"; 
 import "./Resume.css";
 
 const Resume = () => {
-  const { items, shippingCost } = useCart();
+  const { items, shippingCost, clearCart } = useCart();
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); // para saber en qué vista estamos
+  const location = useLocation();
+
+  // 🔹 Recuperar datos del localStorage unificados desde Profile.jsx y Payment.jsx
+  const getCheckoutData = () => {
+    const storedUserData = JSON.parse(localStorage.getItem("userData")) || {};
+    const { personalData = {}, shippingData = {}, envioLocal } = storedUserData;
+
+    const metodoPago = localStorage.getItem("paymentMethod");
+    const datosTarjetaCredito =
+      JSON.parse(localStorage.getItem("datosTarjeta_credito")) || {};
+    const datosTarjetaDebito =
+      JSON.parse(localStorage.getItem("datosTarjeta_debito")) || {};
+
+    let datosMetodo = null;
+    if (metodoPago === "credito") datosMetodo = datosTarjetaCredito;
+    else if (metodoPago === "debito") datosMetodo = datosTarjetaDebito;
+    else if (metodoPago === "mercadopago") datosMetodo = { wallet: "mercadopago" };
+
+    return {
+      cliente: personalData,
+      direccion: shippingData,
+      metodoPago,
+      datosMetodo,
+      envioLocal,
+    };
+  };
 
   useEffect(() => {
     const payment = localStorage.getItem("paymentMethod");
@@ -20,9 +47,76 @@ const Resume = () => {
   );
   const finalTotal = shippingCost ? subtotal + shippingCost : subtotal;
 
-  const handleConfirmPurchase = () => {
-    alert("✅ ¡Compra confirmada con éxito!");
-    navigate("/"); // redirigir o mantener según lo que definas
+  const handleConfirmPurchase = async () => {
+    const { cliente, direccion, metodoPago, datosMetodo } = getCheckoutData();
+
+    // 🧩 Validaciones previas
+    if (
+      !cliente?.dni ||
+      !cliente?.nombre ||
+      !cliente?.apellido ||
+      !cliente?.email
+    ) {
+      alert("⚠️ Faltan datos del cliente.");
+      return;
+    }
+    if (!direccion?.calle || !direccion?.ciudad || !direccion?.provincia) {
+      alert("⚠️ Faltan datos de la dirección.");
+      return;
+    }
+    if (!metodoPago) {
+      alert("⚠️ Faltan los datos del método de pago.");
+      return;
+    }
+    if (items.length === 0) {
+      alert("⚠️ No hay productos en el carrito.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      
+      const direccionAdaptada = {
+        street: direccion.calle + " " + (direccion.altura || ""),
+        city: direccion.ciudad,
+        province: direccion.provincia,
+        country: "Argentina",
+        postal_code: direccion.cp,
+      };
+
+      const clienteAdaptado = {
+        first_name: cliente.nombre,
+        last_name: cliente.apellido,
+        email: cliente.email,
+        dni: cliente.dni,
+        phone: cliente.telefono,
+      };
+
+      const data = await confirmCheckout({
+        cliente: clienteAdaptado,
+        direccion: direccionAdaptada,
+        carrito: items,
+        metodoPago: { type: metodoPago, datos: datosMetodo },
+        total: finalTotal,
+      });
+
+
+      if (data.success) {
+        alert("✅ ¡Compra confirmada con éxito!");
+        clearCart();
+        localStorage.removeItem("userData");
+        localStorage.removeItem("paymentMethod");
+        navigate("/");
+      } else {
+        alert("❌ Error al confirmar la compra: " + (data.message || "Desconocido"));
+      }
+    } catch (error) {
+      console.error("Error al confirmar el checkout:", error);
+      alert("Ocurrió un error al procesar tu compra.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -69,10 +163,13 @@ const Resume = () => {
           ← Volver al carrito
         </button>
 
-        {/* Mostrar solo en la vista de Confirmación */}
         {location.pathname === "/checkout/confirmation" && paymentConfirmed && (
-          <button className="btn-confirmar" onClick={handleConfirmPurchase}>
-            Confirmar compra
+          <button
+            className="btn-confirmar"
+            onClick={handleConfirmPurchase}
+            disabled={loading}
+          >
+            {loading ? "Procesando..." : "Confirmar compra"}
           </button>
         )}
       </div>

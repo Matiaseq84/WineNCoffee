@@ -11,9 +11,6 @@ function Vino() {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        // 👉 Si tu backend filtra por categoría, podés usar:
-        // const res = await fetch("http://localhost:3000/product/vino");
-        // Si no, traemos todos y filtramos del lado del cliente:
         const res = await fetch("http://localhost:3000/product");
         const data = await res.json();
         setProductos(data);

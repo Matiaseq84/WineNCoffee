@@ -3,6 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import admin from "./src/routes/adminRoutes.js";
 import product from "./src/routes/productRoutes.js";
+import checkout from "./src/routes/checkoutRoutes.js"
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 
 app.use('/product', product);
 app.use('/admin', admin);
+app.use('/checkout', checkout);
 
 
 // servir archivos estáticos desde la carpeta 'public'
