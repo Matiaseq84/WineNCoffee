@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./payment.css";
 
 function Payment() {
   const navigate = useNavigate();
-  const [metodo, setMetodo] = useState("credito");
+  const [metodo, setMetodo] = useState("");
   const [datosTarjeta, setDatosTarjeta] = useState({
     nombre: "",
     numero: "",
@@ -12,24 +12,58 @@ function Payment() {
     cvv: "",
   });
 
+  // Al cargar, recuperamos si había datos guardados
+  useEffect(() => {
+    const metodoGuardado = localStorage.getItem("paymentMethod");
+    if (metodoGuardado) {
+      setMetodo(metodoGuardado);
+      const datosGuardados = localStorage.getItem(`datosTarjeta_${metodoGuardado}`);
+      if (datosGuardados) {
+        setDatosTarjeta(JSON.parse(datosGuardados));
+      }
+    }
+  }, []);
+
   const handleMetodoChange = (e) => {
     const value = e.target.value;
     setMetodo(value);
     localStorage.setItem("paymentMethod", value);
+
+    // Cargamos los datos de ese método si existen
+    const datosGuardados = localStorage.getItem(`datosTarjeta_${value}`);
+    if (datosGuardados) {
+      setDatosTarjeta(JSON.parse(datosGuardados));
+    } else {
+      setDatosTarjeta({
+        nombre: "",
+        numero: "",
+        vencimiento: "",
+        cvv: "",
+      });
+    }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     const nuevosDatos = { ...datosTarjeta, [name]: value };
     setDatosTarjeta(nuevosDatos);
-    localStorage.setItem("datosTarjeta", JSON.stringify(nuevosDatos));
+    if (metodo === "credito" || metodo === "debito") {
+      localStorage.setItem(`datosTarjeta_${metodo}`, JSON.stringify(nuevosDatos));
+    }
   };
 
   const handleNext = () => {
-    // Asegura que haya un método de pago antes de continuar
     if (!metodo) {
       alert("Seleccioná un método de pago antes de continuar.");
       return;
+    }
+
+    if (metodo === "credito" || metodo === "debito") {
+      const { nombre, numero, vencimiento, cvv } = datosTarjeta;
+      if (!nombre || !numero || !vencimiento || !cvv) {
+        alert("Completá todos los datos de la tarjeta antes de continuar.");
+        return;
+      }
     }
 
     navigate("/checkout/confirmation");
@@ -60,7 +94,12 @@ function Payment() {
 
       {(metodo === "credito" || metodo === "debito") && (
         <div className="form-tarjeta slide-in">
-          <h3>Datos de la tarjeta</h3>
+          <h3>
+            Datos de la tarjeta{" "}
+            <span style={{ color: "#888" }}>
+              ({metodo === "credito" ? "Crédito" : "Débito"})
+            </span>
+          </h3>
           <form>
             <label>Nombre del titular</label>
             <input

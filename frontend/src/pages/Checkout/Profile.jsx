@@ -1,16 +1,16 @@
 // src/pages/Checkout/Profile.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import "./profile.css";
 
 function Profile() {
   const navigate = useNavigate();
-  const { setShippingCost } = useCart(); // setter global
+  const { setShippingCost } = useCart();
 
   const [personalData, setPersonalData] = useState({
     nombre: "",
-    apellido: "", 
+    apellido: "",
     email: "",
     dni: "",
     telefono: "",
@@ -25,33 +25,103 @@ function Profile() {
     cp: "",
   });
 
-  const [envioLocal, setEnvioLocal] = useState(null); // para mostrar en esta pantalla
+  const [envioLocal, setEnvioLocal] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [generalError, setGeneralError] = useState("");
+
+  // 🔹 Al montar, intentar cargar datos previos del localStorage
+  useEffect(() => {
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      try {
+        const parsed = JSON.parse(storedUserData);
+        if (parsed.personalData) setPersonalData(parsed.personalData);
+        if (parsed.shippingData) setShippingData(parsed.shippingData);
+        if (parsed.envioConfirmado && parsed.envioLocal) {
+          setEnvioLocal(parsed.envioLocal);
+          setShippingCost(parsed.envioLocal);
+        }
+      } catch (e) {
+        console.warn("No se pudieron recuperar datos previos:", e);
+      }
+    }
+  }, [setShippingCost]);
 
   const handlePersonalChange = (e) => {
-    setPersonalData({ ...personalData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    const updated = { ...personalData, [name]: value };
+    setPersonalData(updated);
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+    saveToLocalStorage(updated, shippingData, envioLocal);
   };
 
   const handleShippingChange = (e) => {
-    setShippingData({ ...shippingData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    const updated = { ...shippingData, [name]: value };
+    setShippingData(updated);
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+    saveToLocalStorage(personalData, updated, envioLocal);
+  };
+
+  const saveToLocalStorage = (personal, shipping, envio) => {
+    localStorage.setItem(
+      "userData",
+      JSON.stringify({
+        personalData: personal,
+        shippingData: shipping,
+        envioLocal: envio,
+        envioConfirmado: Boolean(envio),
+      })
+    );
   };
 
   const calcularEnvio = () => {
     if (!shippingData.cp || shippingData.cp.trim().length < 3) {
-      alert("Ingresá un código postal válido.");
+      setGeneralError("Ingresá un código postal válido antes de calcular el envío.");
       return;
     }
     const costo = Math.floor(Math.random() * (3500 - 1500 + 1)) + 1500;
     setEnvioLocal(costo);
-    setShippingCost(costo); // actualiza contexto (Resume lo mostrará)
+    setShippingCost(costo);
+    setGeneralError("");
+    saveToLocalStorage(personalData, shippingData, costo);
+  };
+
+  const validarCampos = () => {
+    let newErrors = {};
+    let valido = true;
+
+    for (const [key, value] of Object.entries(personalData)) {
+      if (!value.trim()) {
+        newErrors[key] = "Campo obligatorio";
+        valido = false;
+      }
+    }
+
+    for (const [key, value] of Object.entries(shippingData)) {
+      if (key !== "piso" && !value.trim()) {
+        newErrors[key] = "Campo obligatorio";
+        valido = false;
+      }
+    }
+
+    if (!envioLocal) {
+      setGeneralError("Calculá el costo de envío antes de continuar.");
+      valido = false;
+    } else {
+      setGeneralError("");
+    }
+
+    setErrors(newErrors);
+    return valido;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // guardamos datos de usuario para que Resume pueda leerlos (opcional)
-    localStorage.setItem(
-      "userData",
-      JSON.stringify({ personalData, shippingData, envioConfirmado: true })
-    );
+
+    if (!validarCampos()) return;
+
+    saveToLocalStorage(personalData, shippingData, envioLocal);
     navigate("/checkout/payment");
   };
 
@@ -61,30 +131,19 @@ function Profile() {
         <h2>Datos Personales</h2>
         <form className="identificacion-form" onSubmit={(e) => e.preventDefault()}>
           <div className="input-row">
-            <div className="input-group">
-              <label>Nombre</label>
-              <input name="nombre" value={personalData.nombre} onChange={handlePersonalChange} required />
-            </div>
-
-            <div className="input-group">
-              <label>Apellido</label>
-              <input name="apellido" value={personalData.apellido} onChange={handlePersonalChange} required />
-            </div>
-
-            <div className="input-group">
-              <label>Email</label>
-              <input type="email" name="email" value={personalData.email} onChange={handlePersonalChange} required />
-            </div>
-
-            <div className="input-group">
-              <label>DNI</label>
-              <input name="dni" value={personalData.dni} onChange={handlePersonalChange} required />
-            </div>
-
-            <div className="input-group">
-              <label>Teléfono</label>
-              <input name="telefono" value={personalData.telefono} onChange={handlePersonalChange} required />
-            </div>
+            {["nombre", "apellido", "email", "dni", "telefono"].map((field) => (
+              <div className="input-group" key={field}>
+                <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+                <input
+                  name={field}
+                  value={personalData[field]}
+                  onChange={handlePersonalChange}
+                  required
+                  type={field === "email" ? "email" : "text"}
+                />
+                {errors[field] && <span className="error-text">{errors[field]}</span>}
+              </div>
+            ))}
           </div>
         </form>
       </div>
@@ -93,46 +152,52 @@ function Profile() {
         <h2>Datos de Envío</h2>
         <form className="envio-form" onSubmit={handleSubmit}>
           <div className="input-row">
-            <div className="input-group">
-              <label>Calle</label>
-              <input name="calle" value={shippingData.calle} onChange={handleShippingChange} required />
-            </div>
-
-            <div className="input-group">
-              <label>Altura</label>
-              <input name="altura" value={shippingData.altura} onChange={handleShippingChange} required />
-            </div>
-
-            <div className="input-group">
-              <label>Piso / Dpto</label>
-              <input name="piso" value={shippingData.piso} onChange={handleShippingChange} placeholder="Opcional" />
-            </div>
-
-            <div className="input-group">
-              <label>Ciudad</label>
-              <input name="ciudad" value={shippingData.ciudad} onChange={handleShippingChange} required />
-            </div>
-
-            <div className="input-group">
-              <label>Provincia</label>
-              <input name="provincia" value={shippingData.provincia} onChange={handleShippingChange} required />
-            </div>
-
-            <div className="input-group">
-              <label>Código Postal</label>
-              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                <input name="cp" value={shippingData.cp} onChange={handleShippingChange} placeholder="Ej. 1425" required />
-                <button type="button" onClick={calcularEnvio} className="btn-cp">Calcular envío</button>
+            {["calle", "altura", "piso", "ciudad", "provincia", "cp"].map((field) => (
+              <div className="input-group" key={field}>
+                <label>
+                  {field === "cp"
+                    ? "Código Postal"
+                    : field.charAt(0).toUpperCase() + field.slice(1)}
+                </label>
+                {field === "cp" ? (
+                  <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                    <input
+                      name={field}
+                      value={shippingData[field]}
+                      onChange={handleShippingChange}
+                      placeholder="Ej. 1425"
+                      required
+                    />
+                    <button type="button" onClick={calcularEnvio} className="btn-cp">
+                      Calcular envío
+                    </button>
+                  </div>
+                ) : (
+                  <input
+                    name={field}
+                    value={shippingData[field]}
+                    onChange={handleShippingChange}
+                    placeholder={field === "piso" ? "Opcional" : ""}
+                    required={field !== "piso"}
+                  />
+                )}
+                {errors[field] && <span className="error-text">{errors[field]}</span>}
               </div>
-            </div>
+            ))}
           </div>
 
           {envioLocal && (
-            <p className="envio-info">Costo de envío estimado: <strong>${envioLocal.toLocaleString()}</strong></p>
+            <p className="envio-info">
+              Costo de envío estimado: <strong>${envioLocal.toLocaleString()}</strong>
+            </p>
           )}
 
+          {generalError && <p className="error-text general-error">{generalError}</p>}
+
           <div style={{ marginTop: "1rem" }}>
-            <button type="submit" className="btn-next">Ir al pago</button>
+            <button type="submit" className="btn-next">
+              Ir al pago
+            </button>
           </div>
         </form>
       </div>
