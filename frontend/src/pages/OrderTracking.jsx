@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
-import "./orderTracking.css";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getOrderById } from "../services/orderService"; // 
+import "./OrderTracking.css";
 
 const OrderTracking = () => {
   const { orderId } = useParams();
@@ -13,10 +11,10 @@ const OrderTracking = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const { data } = await axios.get(`${API_URL}/orders/${orderId}`);
+        const data = await getOrderById(orderId);
         setOrder(data);
       } catch (error) {
-        console.error("Error al obtener el pedido:", error);
+        console.error("Error al cargar el pedido:", error);
       } finally {
         setLoading(false);
       }
@@ -40,7 +38,7 @@ const OrderTracking = () => {
         <div className="estado">
           <span className="estado-icon">✔️</span>
           <div>
-            <strong>Confirmado</strong>
+            <strong>{order.status || "Confirmado"}</strong>
             <p>{new Date(order.confirmation_date).toLocaleDateString()}</p>
           </div>
         </div>
@@ -49,22 +47,22 @@ const OrderTracking = () => {
       <div className="info-grid">
         <div className="info-section">
           <h3>Información de contacto</h3>
-          <p>{order.client.email}</p>
+          <p>{order.client?.email}</p>
 
           <h3>Dirección de envío</h3>
-          <p>{order.client.first_name} {order.client.last_name}</p>
-          <p>{order.address.street}</p>
+          <p>{order.client?.first_name} {order.client?.last_name}</p>
+          <p>{order.address?.street}</p>
           <p>
-            {order.address.city}, {order.address.province}
+            {order.address?.city}, {order.address?.province}
           </p>
-          <p>{order.address.country}</p>
+          <p>{order.address?.country}</p>
         </div>
 
         <div className="info-section">
           <h3>Pago</h3>
-          <p>{order.payment.method === "mercadopago" ? "Mercado Pago" : order.payment.method}</p>
+          <p>{order.payment?.method === "mercadopago" ? "Mercado Pago" : order.payment?.method}</p>
           <p>
-            ${order.total.toLocaleString("es-AR")} ARS
+            ${order.total?.toLocaleString("es-AR")} ARS
           </p>
           <p>{new Date(order.confirmation_date).toLocaleDateString()}</p>
         </div>
@@ -72,7 +70,7 @@ const OrderTracking = () => {
 
       <div className="order-items">
         <h3>Productos</h3>
-        {order.items.map((item) => (
+        {order.items?.map((item) => (
           <div key={item.product_id} className="order-item">
             <div>
               <strong>{item.name}</strong>
@@ -84,9 +82,9 @@ const OrderTracking = () => {
       </div>
 
       <div className="order-total">
-        <p>Subtotal: ${order.subtotal.toLocaleString("es-AR")}</p>
+        <p>Subtotal: ${order.subtotal?.toLocaleString("es-AR")}</p>
         <p>Envío: {order.shipping_cost ? `$${order.shipping_cost}` : "Gratis"}</p>
-        <h3>Total: ${order.total.toLocaleString("es-AR")}</h3>
+        <h3>Total: ${order.total?.toLocaleString("es-AR")}</h3>
       </div>
     </div>
   );
