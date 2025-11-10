@@ -7,7 +7,7 @@ function Cafe() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Traer productos desde el backend
+  // Trae productos desde el backend
   useEffect(() => {
     const fetchProductos = async () => {
       try {

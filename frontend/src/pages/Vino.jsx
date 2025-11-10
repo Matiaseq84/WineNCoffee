@@ -7,7 +7,7 @@ function Vino() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Traer productos desde el backend
+  // Traer productos desde el backend
   useEffect(() => {
     const fetchProductos = async () => {
       try {

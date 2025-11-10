@@ -8,7 +8,7 @@ export const createCheckout = async (req, res) => {
     console.log("🧾 Datos recibidos del frontend:", { cliente, direccion, carrito, metodoPago });
 
     // ========================
-    // 1️⃣ Insertar o reutilizar cliente existente
+    // 1 Insertar o reutilizar cliente existente
     // ========================
     let { data: existingClient, error: searchError } = await supabase
       .from("client")
@@ -43,7 +43,7 @@ export const createCheckout = async (req, res) => {
     }
 
     // ========================
-    // 2️⃣ Insertar dirección
+    // 2 Insertar dirección
     // ========================
     const { data: newAddress, error: addressError } = await supabase
       .from("address")
@@ -64,7 +64,7 @@ export const createCheckout = async (req, res) => {
     console.log("📍 Dirección insertada:", newAddress.address_id);
 
     // ========================
-    // 3️⃣ Crear orden principal
+    // 3 Crear orden principal
     // ========================
     const { data: newOrder, error: orderError } = await supabase
       .from("orders")
@@ -85,7 +85,7 @@ export const createCheckout = async (req, res) => {
     console.log("🆕 Orden creada:", orderId);
 
     // ========================
-    // 4️⃣ Insertar método de pago (tabla customer_method)
+    // 4 Insertar método de pago (tabla customer_method)
     // ========================
     let methodData = {};
     if (metodoPago.type === "credito" || metodoPago.type === "debito") {
@@ -120,7 +120,7 @@ export const createCheckout = async (req, res) => {
     console.log("💳 Método de pago insertado:", customerMethodId);
 
     // ========================
-    // 5️⃣ Crear registro en payment
+    // 5 Crear registro en payment
     // ========================
     const { data: paymentData, error: paymentError } = await supabase
       .from("payment")
@@ -140,7 +140,7 @@ export const createCheckout = async (req, res) => {
     console.log("💰 Pago registrado correctamente con ID:", paymentId);
 
     // ========================
-    // 6️⃣ Insertar venta final (tabla sale)
+    // 6 Insertar venta final (tabla sale)
     // ========================
     const { error: saleError } = await supabase
       .from("sale")
@@ -157,7 +157,7 @@ export const createCheckout = async (req, res) => {
     console.log("🧾 Venta registrada correctamente en 'sale'");
 
     // ========================
-    // 7️⃣ Insertar ítems y actualizar stock
+    // 7 Insertar ítems y actualizar stock
     // ========================
     for (const item of carrito) {
       const productId = item.product_id || item.id;
@@ -182,7 +182,7 @@ export const createCheckout = async (req, res) => {
     }
 
         // ========================
-    // 8️⃣ Actualizar estado de la orden a "confirmed"
+    // 8 Actualizar estado de la orden a "confirmed"
     // ========================
     const { error: updateOrderError } = await supabase
       .from("orders")
@@ -193,7 +193,7 @@ export const createCheckout = async (req, res) => {
     console.log("🔄 Estado de la orden actualizado a 'confirmed'");
 
     // ========================
-    // 9️⃣ Respuesta final
+    // 9 Respuesta final
     // ========================
     return res.status(200).json({
       success: true,

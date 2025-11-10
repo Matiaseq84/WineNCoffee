@@ -11,7 +11,7 @@ const Resume = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🔹 Recuperar datos del localStorage unificados desde Profile.jsx y Payment.jsx
+  // Recuperar datos del localStorage unificados desde Profile.jsx y Payment.jsx
   const getCheckoutData = () => {
     const storedUserData = JSON.parse(localStorage.getItem("userData")) || {};
     const { personalData = {}, shippingData = {}, envioLocal } = storedUserData;
