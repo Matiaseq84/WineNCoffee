@@ -19,6 +19,7 @@ import Checkout from "../pages/Checkout/CheckoutLayout.jsx";
 import Profile from "../pages/Checkout/Profile.jsx";
 import Payment from "../pages/Checkout/Payment.jsx";
 import Confirmation from "../pages/Checkout/Confirmation.jsx";
+import OrderTracking from "../pages/OrderTracking.jsx";
 
 function AppRoutes() {
   return (
@@ -35,6 +36,7 @@ function AppRoutes() {
           <Route path="payment" element= {<Payment />}/>
           <Route path="confirmation" element= {<Confirmation />}/>
         </Route>
+        <Route path="/order/:orderId" element= {<OrderTracking />}/>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/admin" element={<AdminPanel />} />

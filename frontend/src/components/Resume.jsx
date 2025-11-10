@@ -5,7 +5,7 @@ import { confirmCheckout } from "../services/checkoutService";
 import "./Resume.css";
 
 const Resume = () => {
-  const { items, shippingCost, clearCart } = useCart();
+  const { items, shippingCost, clear } = useCart();
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -104,7 +104,7 @@ const Resume = () => {
 
       if (data.success) {
         alert("✅ ¡Compra confirmada con éxito!");
-        clearCart();
+        clear();
         localStorage.removeItem("userData");
         localStorage.removeItem("paymentMethod");
         navigate("/");
