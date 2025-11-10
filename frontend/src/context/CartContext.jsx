@@ -1,5 +1,4 @@
 
-// src/context/CartContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
@@ -19,7 +18,7 @@ export function CartProvider({ children }) {
   // shippingCost: costo de envío calculado por Profile (NO persistido por defecto)
   const [shippingCost, setShippingCost] = useState(null);
 
-  // Persistimos solo el carrito en localStorage para que sobreviva recargas
+  // Se persiste solo el carrito en localStorage para que sobreviva recargas
   useEffect(() => {
     try {
       localStorage.setItem("cart", JSON.stringify(items));
