@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getOrderById } from "../services/orderService"; // 
+import { getOrderById } from "../services/orderService";
 import "./OrderTracking.css";
 
 const OrderTracking = () => {
@@ -25,23 +25,41 @@ const OrderTracking = () => {
   if (loading) return <p>Cargando pedido...</p>;
   if (!order) return <p>No se encontró el pedido.</p>;
 
+  // Estados del seguimiento
+  const steps = [
+    { key: "paid", label: "Pagado", icon: "💳" },
+    { key: "shipped", label: "Enviado", icon: "📦" },
+    { key: "cancelled", label: "Cancelado", icon: "❌" },
+  ];
+
+  // Determinar progreso actual
+  const currentStatus = order.status || "paid";
+  const currentIndex = steps.findIndex((s) => s.key === currentStatus);
+
   return (
     <div className="order-tracking">
       <Link to="/" className="back-link">← Volver a la tienda</Link>
 
       <h2>Pedido #{order.id}</h2>
       <p className="fecha-confirmacion">
-        Fecha de confirmación: {new Date(order.confirmation_date).toLocaleDateString()}
+        Fecha de confirmación:{" "}
+        {new Date(order.confirmation_date).toLocaleDateString()}
       </p>
 
-      <div className="estado-container">
-        <div className="estado">
-          <span className="estado-icon">✔️</span>
-          <div>
-            <strong>{order.status || "Confirmado"}</strong>
-            <p>{new Date(order.confirmation_date).toLocaleDateString()}</p>
+      {/* --- Timeline de estado --- */}
+      <div className="tracking-timeline">
+        {steps.map((step, index) => (
+          <div
+            key={step.key}
+            className={`tracking-step ${
+              index <= currentIndex ? "active" : ""
+            } ${currentStatus === "cancelled" && step.key !== "cancelled" ? "disabled" : ""}`}
+          >
+            <div className="icon">{step.icon}</div>
+            <p>{step.label}</p>
+            {index < steps.length - 1 && <div className="line"></div>}
           </div>
-        </div>
+        ))}
       </div>
 
       <div className="info-grid">
@@ -61,9 +79,7 @@ const OrderTracking = () => {
         <div className="info-section">
           <h3>Pago</h3>
           <p>{order.payment?.method === "mercadopago" ? "Mercado Pago" : order.payment?.method}</p>
-          <p>
-            ${order.total?.toLocaleString("es-AR")} ARS
-          </p>
+          <p>${order.total?.toLocaleString("es-AR")} ARS</p>
           <p>{new Date(order.confirmation_date).toLocaleDateString()}</p>
         </div>
       </div>

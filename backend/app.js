@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 app.use('/product', product);
 app.use('/admin', admin);
 app.use('/checkout', checkout);
-app.use('/orders/', order)
+app.use('/order/', order)
 
 
 // servir archivos estáticos desde la carpeta 'public'

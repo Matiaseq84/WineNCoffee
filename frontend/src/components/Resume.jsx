@@ -107,9 +107,16 @@ const Resume = () => {
         clear();
         localStorage.removeItem("userData");
         localStorage.removeItem("paymentMethod");
-        navigate("/");
+
+        console.log(data.order_id)
+
+        if (data.order_id) {
+          navigate(`/order/${data.order_id}`);
+        } else {
+          navigate("/"); // fallback
+        }
       } else {
-        alert("❌ Error al confirmar la compra: " + (data.message || "Desconocido"));
+        alert("Error al confirmar la compra: " + (data.message || "Desconocido"));
       }
     } catch (error) {
       console.error("Error al confirmar el checkout:", error);

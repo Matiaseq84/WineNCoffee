@@ -10,10 +10,10 @@ export const createCheckout = async (req, res) => {
     // ========================
     // 1️⃣ Insertar o reutilizar cliente existente
     // ========================
-    const { data: existingClient, error: searchError } = await supabase
+    let { data: existingClient, error: searchError } = await supabase
       .from("client")
       .select("client_id")
-      .eq("dni", cliente.dni)
+      .or(`dni.eq.${cliente.dni},email.eq.${cliente.email}`)
       .single();
 
     if (searchError && searchError.code !== "PGRST116") throw searchError;
@@ -74,6 +74,7 @@ export const createCheckout = async (req, res) => {
           order_date: new Date().toISOString(),
           amount: total,
           status: "pending",
+          shipping_address_id: newAddress.address_id,
         },
       ])
       .select()
@@ -197,8 +198,8 @@ export const createCheckout = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Checkout completo: cliente, dirección, orden, pago, venta e ítems registrados.",
-      orderId,
-      clientId,
+      order_id: orderId,
+      client_id: clientId,
     });
 
   } catch (error) {
