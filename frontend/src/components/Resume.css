@@ -1,0 +1,35 @@
+.resumen-botones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.btn-volver,
+.btn-confirmar {
+  flex: 1;
+  margin: 0 0.3rem;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-volver {
+  background-color: #ddd;
+  color: #333;
+}
+
+.btn-volver:hover {
+  background-color: #ccc;
+}
+
+.btn-confirmar {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-confirmar:hover {
+  background-color: #0056b3;
+}

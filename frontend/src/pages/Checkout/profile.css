@@ -1,0 +1,88 @@
+/* profile.css */
+body {
+  color: black;
+}
+.profile-container {
+  max-width: 1000px;
+  margin: 24px auto;
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.form-block {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.input-group {
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-group label {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.input-group input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.btn-cp {
+  background: #d4b97d;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-next {
+  background: #6e0c2b;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.envio-info {
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.error-text {
+  color: #e63946;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  display: block;
+}
+
+.general-error {
+  margin-top: 10px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.envio-info {
+  margin-top: 10px;
+  color: #1d3557;
+  font-weight: 500;
+}

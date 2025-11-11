@@ -20,7 +20,9 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "morgan": "^1.10.1",
-    "wineandcoffee": "file:.."
+    "wineandcoffee": "file:..",
+    "nodemailer": "^7.0.10",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "jest": "^29.0.0",
