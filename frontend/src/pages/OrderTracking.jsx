@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getOrderById } from "../services/orderService";
+import { io } from "socket.io-client";
 import "./OrderTracking.css";
+
+const socket = io(import.meta.env.VITE_API_URL); // URL del backend
 
 const OrderTracking = () => {
   const { orderId } = useParams();
@@ -20,6 +23,17 @@ const OrderTracking = () => {
       }
     };
     fetchOrder();
+
+    // 🔄 Escuchar cambios en tiempo real
+    socket.on("orderStatusUpdated", (update) => {
+      if (update.orderId === orderId) {
+        setOrder((prev) => ({ ...prev, status: update.newStatus }));
+      }
+    });
+
+    return () => {
+      socket.off("orderStatusUpdated");
+    };
   }, [orderId]);
 
   if (loading) return <p>Cargando pedido...</p>;
@@ -27,18 +41,20 @@ const OrderTracking = () => {
 
   // Estados del seguimiento
   const steps = [
+    { key: "pending", label: "Pendiente", icon: "🕓" },
     { key: "paid", label: "Pagado", icon: "💳" },
-    { key: "shipped", label: "Enviado", icon: "📦" },
+    { key: "shipped", label: "Enviado", icon: "🚚" },
     { key: "cancelled", label: "Cancelado", icon: "❌" },
   ];
 
-  // Determinar progreso actual
-  const currentStatus = order.status || "paid";
+  const currentStatus = order.status || "pending";
   const currentIndex = steps.findIndex((s) => s.key === currentStatus);
 
   return (
     <div className="order-tracking">
-      <Link to="/" className="back-link">← Volver a la tienda</Link>
+      <Link to="/" className="back-link">
+        ← Volver a la tienda
+      </Link>
 
       <h2>Pedido #{order.id}</h2>
       <p className="fecha-confirmacion">
@@ -46,21 +62,32 @@ const OrderTracking = () => {
         {new Date(order.confirmation_date).toLocaleDateString()}
       </p>
 
-      {/* --- Timeline de estado --- */}
-      <div className="tracking-timeline">
-        {steps.map((step, index) => (
-          <div
-            key={step.key}
-            className={`tracking-step ${
-              index <= currentIndex ? "active" : ""
-            } ${currentStatus === "cancelled" && step.key !== "cancelled" ? "disabled" : ""}`}
-          >
-            <div className="icon">{step.icon}</div>
-            <p>{step.label}</p>
-            {index < steps.length - 1 && <div className="line"></div>}
-          </div>
-        ))}
+      {/* --- Timeline visual--- */}
+<div className="tracking-timeline">
+  {steps.map((step, index) => {
+    const isCompleted = index < currentIndex && currentStatus !== "cancelled";
+    const isActive = index === currentIndex && currentStatus !== "cancelled";
+    const isPending = index > currentIndex && currentStatus !== "cancelled";
+    const isCancelled = currentStatus === "cancelled" && step.key === "cancelled";
+
+    return (
+      <div
+        key={step.key}
+        className={`tracking-step 
+          ${isCompleted ? "completed" : ""} 
+          ${isActive ? "active" : ""} 
+          ${isPending ? "pending" : ""} 
+          ${isCancelled ? "cancelled" : ""}
+        `}
+      >
+        <div className="icon">{step.icon}</div>
+        <p>{step.label}</p>
+        {index < steps.length - 1 && <div className="line"></div>}
       </div>
+    );
+  })}
+</div>
+
 
       <div className="info-grid">
         <div className="info-section">
@@ -68,7 +95,9 @@ const OrderTracking = () => {
           <p>{order.client?.email}</p>
 
           <h3>Dirección de envío</h3>
-          <p>{order.client?.first_name} {order.client?.last_name}</p>
+          <p>
+            {order.client?.first_name} {order.client?.last_name}
+          </p>
           <p>{order.address?.street}</p>
           <p>
             {order.address?.city}, {order.address?.province}
@@ -78,7 +107,11 @@ const OrderTracking = () => {
 
         <div className="info-section">
           <h3>Pago</h3>
-          <p>{order.payment?.method === "mercadopago" ? "Mercado Pago" : order.payment?.method}</p>
+          <p>
+            {order.payment?.method === "mercadopago"
+              ? "Mercado Pago"
+              : order.payment?.method}
+          </p>
           <p>${order.total?.toLocaleString("es-AR")} ARS</p>
           <p>{new Date(order.confirmation_date).toLocaleDateString()}</p>
         </div>

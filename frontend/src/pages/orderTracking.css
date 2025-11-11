@@ -75,55 +75,96 @@ h2 {
 .tracking-timeline {
   display: flex;
   justify-content: space-between;
-  margin: 2rem 0;
+  align-items: center;
   position: relative;
+  margin: 40px 0;
+  padding: 0 10px;
 }
 
 .tracking-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   flex: 1;
-  position: relative;
 }
 
 .tracking-step .icon {
-  background: #ccc;
-  color: #fff;
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
+  font-size: 28px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  margin: 0 auto;
-  font-size: 20px;
-}
-
-.tracking-step.active .icon {
-  background: #28a745;
-}
-
-.tracking-step.disabled .icon {
-  background: #aaa;
+  background-color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
 }
 
 .tracking-step p {
-  margin-top: 0.5rem;
-  font-weight: 500;
+  font-size: 14px;
+  color: #555;
+  margin: 0;
 }
 
+/* Línea conectora entre pasos */
 .tracking-step .line {
-  content: "";
   position: absolute;
-  top: 20px;
+  top: 22px;
   right: -50%;
   width: 100%;
   height: 4px;
-  background: #ccc;
+  background-color: #e0e0e0;
   z-index: -1;
 }
 
-.tracking-step.active ~ .tracking-step .line {
-  background: #ccc;
+.tracking-step:last-child .line {
+  display: none;
 }
 
-.tracking-step.active .line {
-  background: #28a745;
+/* === ESTADOS VISUALES === */
+.tracking-step.completed .icon {
+  background-color: #4caf50;
+  color: white;
+  transform: scale(1.15);
 }
+
+.tracking-step.completed p {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.tracking-step.active .icon {
+  background-color: #2196f3;
+  color: white;
+  transform: scale(1.2);
+}
+
+.tracking-step.active p {
+  color: #2196f3;
+  font-weight: 600;
+}
+
+.tracking-step.pending .icon {
+  background-color: #ccc;
+  color: #fff;
+}
+
+.tracking-step.cancelled .icon {
+  background-color: #f44336;
+  color: white;
+  transform: scale(1.2);
+}
+
+.tracking-step.cancelled p {
+  color: #f44336;
+  font-weight: 600;
+}
+
+/* Colorear la línea según progreso */
+.tracking-step.completed ~ .tracking-step .line {
+  background-color: #4caf50;
+}
+
