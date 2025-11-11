@@ -1,5 +1,7 @@
 import { supabase } from "../config/db.js";
 import { checkProductStock, decrementProductStock } from "./productController.js";
+import { sendOrderConfirmationEmail } from "../services/emailService.js";
+
 
 export const createCheckout = async (req, res) => {
   try {
@@ -178,7 +180,7 @@ export const createCheckout = async (req, res) => {
       if (itemError) throw itemError;
 
       await decrementProductStock(productId, quantity);
-      console.log(`📦 Stock actualizado para producto ${productId}`);
+      console.log(`Stock actualizado para producto ${productId}`);
     }
 
         // ========================
@@ -190,7 +192,22 @@ export const createCheckout = async (req, res) => {
       .eq("order_id", orderId);
 
     if (updateOrderError) throw updateOrderError;
-    console.log("🔄 Estado de la orden actualizado a 'confirmed'");
+    console.log("Estado de la orden actualizado a 'confirmed'");
+
+    // ========================
+    // 8.1 Enviar correo de confirmación al cliente
+    // ========================
+    try {
+      await sendOrderConfirmationEmail(cliente.email, {
+        orderId,
+        total,
+        items: carrito,
+        client: cliente,
+      });
+      console.log("Correo de confirmación enviado a", cliente.email);
+    } catch (emailError) {
+      console.error("Error al enviar correo:", emailError);
+    }
 
     // ========================
     // 9 Respuesta final
