@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import { confirmCheckout } from "../services/checkoutService"; 
+import { confirmCheckout } from "../services/checkoutService";
 import "./Resume.css";
 
 const Resume = () => {
@@ -10,6 +10,19 @@ const Resume = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // 🔄 Detectar automáticamente si todos los pasos del checkout están completos
+  useEffect(() => {
+    const payment = localStorage.getItem("paymentMethod");
+    const userData = JSON.parse(localStorage.getItem("userData")) || {};
+    const envioOk = localStorage.getItem("shippingCost");
+
+    if (payment && userData?.personalData && envioOk) {
+      setPaymentConfirmed(true);
+    } else {
+      setPaymentConfirmed(false);
+    }
+  }, [location.pathname]); // se actualiza si cambia de paso
 
   // Recuperar datos del localStorage unificados desde Profile.jsx y Payment.jsx
   const getCheckoutData = () => {
@@ -35,11 +48,6 @@ const Resume = () => {
       envioLocal,
     };
   };
-
-  useEffect(() => {
-    const payment = localStorage.getItem("paymentMethod");
-    if (payment) setPaymentConfirmed(true);
-  }, []);
 
   const subtotal = items.reduce(
     (acc, it) => acc + (Number(it.price) || 0) * (it.qty || 1),
@@ -76,7 +84,6 @@ const Resume = () => {
     setLoading(true);
 
     try {
-      
       const direccionAdaptada = {
         street: direccion.calle + " " + (direccion.altura || ""),
         city: direccion.ciudad,
@@ -101,19 +108,17 @@ const Resume = () => {
         total: finalTotal,
       });
 
-
       if (data.success) {
         alert("✅ ¡Compra confirmada con éxito!");
         clear();
         localStorage.removeItem("userData");
         localStorage.removeItem("paymentMethod");
-
-        console.log(data.order_id)
+        localStorage.removeItem("shippingCost");
 
         if (data.order_id) {
           navigate(`/order/${data.order_id}`);
         } else {
-          navigate("/"); // fallback
+          navigate("/");
         }
       } else {
         alert("Error al confirmar la compra: " + (data.message || "Desconocido"));

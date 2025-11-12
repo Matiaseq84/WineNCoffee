@@ -40,31 +40,35 @@ function Confirmation() {
   const [envioLocal, setEnvioLocal] = useState(shippingCost);
 
   useEffect(() => {
-    const stored = localStorage.getItem("userData");
-    const payment = localStorage.getItem("paymentMethod");
-    const metodoTarjeta = payment || "";
+  const stored = localStorage.getItem("userData");
+  const payment = localStorage.getItem("paymentMethod");
+  const metodoTarjeta = payment || "";
 
-    // Recupera datos del usuario
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      setUserData((prev) => ({
-        ...prev,
-        ...parsed,
-        paymentMethod: metodoTarjeta,
-      }));
-      if (parsed.shippingData?.cp) recalculateShipping(parsed.shippingData.cp);
+  if (stored) {
+    const parsed = JSON.parse(stored);
+
+    // Si ya hay costo guardado en localStorage, lo usamos directamente
+    if (parsed.envioLocal) {
+      setEnvioLocal(parsed.envioLocal);
+      setShippingCost(parsed.envioLocal);
     }
 
-    // Recupera datos de tarjeta según método
-    if (metodoTarjeta === "credito" || metodoTarjeta === "debito") {
-      const datosGuardados = localStorage.getItem(
-        `datosTarjeta_${metodoTarjeta}`
-      );
-      if (datosGuardados) {
-        setDatosTarjeta(JSON.parse(datosGuardados));
-      }
+    setUserData((prev) => ({
+      ...prev,
+      ...parsed,
+      paymentMethod: metodoTarjeta,
+    }));
+  }
+
+  // Recupera datos de tarjeta según método
+  if (metodoTarjeta === "credito" || metodoTarjeta === "debito") {
+    const datosGuardados = localStorage.getItem(`datosTarjeta_${metodoTarjeta}`);
+    if (datosGuardados) {
+      setDatosTarjeta(JSON.parse(datosGuardados));
     }
-  }, []);
+  }
+}, []);
+
 
   const handleChangePersonal = (e) => {
     setUserData({
