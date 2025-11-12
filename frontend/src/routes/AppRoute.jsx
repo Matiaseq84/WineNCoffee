@@ -5,14 +5,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../pages/Home.jsx";
 import Cafe from "../pages/Cafe.jsx";        
 import Vino from "../pages/Vino.jsx";         
-import ProductDetail from "../pages/productdetail.jsx";
-import Login from "../pages/login.jsx";
-import Register from "../pages/register.jsx";
-import AdminPanel from "../pages/adminpanel.jsx";
+import ProductDetail from "../pages/ProductDetail.jsx";
+import Login from "../pages/Login.jsx";
+import Register from "../pages/Register.jsx";
+import AdminPanel from "../pages/AdminPanel.jsx";
 
 
-import Navbar from "../components/navbar.jsx";
-import Footer from "../components/footer.jsx";
+import Navbar from "../components/Navbar.jsx";
+import Footer from "../components/Footer.jsx";
 
 import Carrito from "../pages/Carrito.jsx";
 import Checkout from "../pages/Checkout/CheckoutLayout.jsx";
