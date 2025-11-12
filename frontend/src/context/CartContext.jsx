@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
@@ -15,10 +14,18 @@ export function CartProvider({ children }) {
     }
   });
 
-  // shippingCost: costo de envío calculado por Profile (NO persistido por defecto)
-  const [shippingCost, setShippingCost] = useState(null);
+  // shippingCost: costo de envío calculado por Profile (ahora persistido también)
+  const [shippingCost, setShippingCost] = useState(() => {
+    try {
+      const saved = localStorage.getItem("shippingCost");
+      return saved ? JSON.parse(saved) : null; // null si no hay guardado
+    } catch (e) {
+      console.error("Error leyendo shippingCost:", e);
+      return null;
+    }
+  });
 
-  // Se persiste solo el carrito en localStorage para que sobreviva recargas
+  // 🧠 Persistir carrito en localStorage
   useEffect(() => {
     try {
       localStorage.setItem("cart", JSON.stringify(items));
@@ -26,6 +33,17 @@ export function CartProvider({ children }) {
       console.error("Error guardando carrito:", e);
     }
   }, [items]);
+
+  // 🚚 Persistir costo de envío en localStorage
+  useEffect(() => {
+    try {
+      if (shippingCost !== null) {
+        localStorage.setItem("shippingCost", JSON.stringify(shippingCost));
+      }
+    } catch (e) {
+      console.error("Error guardando shippingCost:", e);
+    }
+  }, [shippingCost]);
 
   const getId = (obj) => obj.id ?? obj.product_id;
 
@@ -100,4 +118,3 @@ export const useCart = () => {
   if (!ctx) throw new Error("useCart debe usarse dentro de CartProvider");
   return ctx;
 };
-
