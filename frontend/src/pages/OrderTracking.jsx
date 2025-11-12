@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { getOrderById } from "../services/orderService";
 import { io } from "socket.io-client";
 import "./OrderTracking.css";
@@ -10,12 +10,14 @@ const OrderTracking = () => {
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const initialShippingCost = location.state?.shippingCost || 0;
 
   useEffect(() => {
     const fetchOrder = async () => {
       try {
         const data = await getOrderById(orderId);
-        setOrder(data);
+        setOrder({...data, shipping_cost: initialShippingCost});
       } catch (error) {
         console.error("Error al cargar el pedido:", error);
       } finally {
@@ -24,7 +26,7 @@ const OrderTracking = () => {
     };
     fetchOrder();
 
-    // 🔄 Escuchar cambios en tiempo real
+    // Escuchar cambios en tiempo real
     socket.on("orderStatusUpdated", (update) => {
       if (update.orderId === orderId) {
         setOrder((prev) => ({ ...prev, status: update.newStatus }));
@@ -34,7 +36,7 @@ const OrderTracking = () => {
     return () => {
       socket.off("orderStatusUpdated");
     };
-  }, [orderId]);
+  }, [orderId, initialShippingCost]);
 
   if (loading) return <p>Cargando pedido...</p>;
   if (!order) return <p>No se encontró el pedido.</p>;
@@ -133,7 +135,12 @@ const OrderTracking = () => {
       <div className="order-total">
         <p>Subtotal: ${order.subtotal?.toLocaleString("es-AR")}</p>
         <p>Envío: {order.shipping_cost ? `$${order.shipping_cost}` : "Gratis"}</p>
-        <h3>Total: ${order.total?.toLocaleString("es-AR")}</h3>
+        <h3>
+          Total: $
+          {(
+            (order.subtotal || 0) + (order.shipping_cost || 0)
+          ).toLocaleString("es-AR")}
+        </h3>
       </div>
     </div>
   );
