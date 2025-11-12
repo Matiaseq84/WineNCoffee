@@ -116,9 +116,12 @@ const Resume = () => {
         localStorage.removeItem("shippingCost");
 
         if (data.order_id) {
-          navigate(`/order/${data.order_id}`);
+          navigate(`/order/${data.order_id}`, {
+            state: { shippingCost }, 
+          });
+          
         } else {
-          navigate("/");
+          navigate("/", {replace: true });
         }
       } else {
         alert("Error al confirmar la compra: " + (data.message || "Desconocido"));
