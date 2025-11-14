@@ -1,3 +1,4 @@
+// backend/src/controllers/adminController.js
 import { supabase } from "../config/db.js";
 import bcrypt from "bcryptjs";
 
@@ -10,13 +11,12 @@ export const postAdmin = async (req, res) => {
       return res.status(400).json({ error: "Faltan campos obligatorios" });
     }
 
-    // Hash de la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const { data, error } = await supabase
       .from("admin")
       .insert([{ user_name, password: hashedPassword }])
-      .select("admin_id, user_name")  // no devolvemos el hash
+      .select("admin_id, user_name");
 
     if (error) {
       console.error("Error supabase postAdmin:", error);
@@ -41,7 +41,7 @@ export const getAdmins = async (_req, res) => {
   try {
     const { data, error } = await supabase
       .from("admin")
-      .select("admin_id, user_name"); // no mandamos password
+      .select("admin_id, user_name"); // no devolvemos password
 
     if (error) {
       console.error("Error supabase getAdmins:", error);
@@ -66,7 +66,7 @@ export const getAdminById = async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("admin")
-      .select("admin_id, user_name") // de nuevo, sin password
+      .select("admin_id, user_name")
       .eq("admin_id", id)
       .single();
 
@@ -109,7 +109,7 @@ export const updateAdmin = async (req, res) => {
       .from("admin")
       .update(updateData)
       .eq("admin_id", id)
-      .select("admin_id, user_name")  // no devolvemos el hash
+      .select("admin_id, user_name")
       .single();
 
     if (error) {
