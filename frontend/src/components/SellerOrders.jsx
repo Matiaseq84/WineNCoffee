@@ -20,6 +20,7 @@ export default function SellerOrders() {
     }
   };
 
+  /*
   const updateStatus = async (id, status) => {
     try {
       await api.put(`/order/${id}`, { status });
@@ -29,6 +30,18 @@ export default function SellerOrders() {
       alert("No se pudo actualizar el estado del pedido. Revisá el enum order_status.");
     }
   };
+  */
+  
+  const updateStatus = async (id, status) => {
+  try {
+    await api.put(`/order/${id}/status`, { status }); // 👈 OJO: /status al final
+    await loadOrders();
+  } catch (e) {
+    console.error("Error actualizando estado:", e);
+    alert("No se pudo actualizar el estado del pedido. Revisá el enum order_status.");
+  }
+};
+
 
   useEffect(() => {
     loadOrders();
