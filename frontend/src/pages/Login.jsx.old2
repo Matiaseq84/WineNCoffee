@@ -1,0 +1,46 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+export default function Login() {
+  const [user, setUser] = useState("");
+  const [pass, setPass] = useState("");
+  const nav = useNavigate();
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    if (pass === "admin123") return nav("/admin");
+    if (pass === "vendedor123") return nav("/seller");
+    return nav("/");
+  };
+
+  return (
+    <div className="login-container" style={{ textAlign: "center", padding: "2rem" }}>
+      <img
+        src="/public/img-inicio.jpg"
+        alt="Wine & Coffee"
+        style={{ width: "300px", height: "auto", marginBottom: "1rem" }}
+      />
+
+      <form onSubmit={onSubmit}>
+        <input
+          type="text"
+          placeholder="Usuario"
+          value={user}
+          onChange={(e) => setUser(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Clave"
+          value={pass}
+          onChange={(e) => setPass(e.target.value)}
+        />
+        <button type="submit">Iniciar sesión</button>
+      </form>
+
+      <button onClick={() => nav("/register")} style={{ marginTop: "10px" }}>
+        Registrarse
+      </button>
+    </div>
+  );
+}

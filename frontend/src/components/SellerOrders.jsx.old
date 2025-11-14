@@ -1,0 +1,80 @@
+import { useEffect, useState } from "react";
+import api from "../services/api";
+
+export default function SellerOrders() {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
+
+  const loadOrders = async () => {
+    try {
+      setErr("");
+      setLoading(true);
+      const { data } = await api.get("/order"); // GET /order desde tu backend
+      setOrders(data || []);
+    } catch (e) {
+      console.error("Error cargando pedidos:", e);
+      setErr("No se pudieron cargar los pedidos.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateStatus = async (id, status) => {
+    try {
+      await api.put(`/order/${id}`, { status });
+      await loadOrders();
+    } catch (e) {
+      console.error("Error actualizando estado:", e);
+      alert("No se pudo actualizar el estado del pedido");
+    }
+  };
+
+  useEffect(() => {
+    loadOrders();
+  }, []);
+
+  if (loading) return <p>Cargando pedidos...</p>;
+  if (err) return <p style={{ color: "crimson" }}>{err}</p>;
+  if (!orders.length) return <p>No hay pedidos por el momento.</p>;
+
+  return (
+    <div>
+      <h2>Pedidos</h2>
+      <table border="1" cellPadding="6" style={{ borderCollapse: "collapse", width: "100%" }}>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Estado</th>
+            <th>Total</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map((o) => (
+            <tr key={o.order_id || o.id}>
+              <td>{o.order_id || o.id}</td>
+              <td>{o.customer_name || o.client_name || "N/D"}</td>
+              <td>{o.status || "pendiente"}</td>
+              <td>{o.total ?? o.amount ?? "-"}</td>
+              <td>{o.created_at ? new Date(o.created_at).toLocaleString() : "N/D"}</td>
+              <td>
+                <button onClick={() => updateStatus(o.order_id || o.id, "en_proceso")}>
+                  En proceso
+                </button>
+                <button onClick={() => updateStatus(o.order_id || o.id, "enviado")}>
+                  Enviado
+                </button>
+                <button onClick={() => updateStatus(o.order_id || o.id, "entregado")}>
+                  Entregado
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

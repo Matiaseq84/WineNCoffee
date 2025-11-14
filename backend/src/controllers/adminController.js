@@ -1,125 +1,169 @@
-import { supabase } from '../config/db.js';
-import bcrypt from 'bcrypt';
+// backend/src/controllers/adminController.js
+import { supabase } from "../config/db.js";
+import bcrypt from "bcryptjs";
 
-// POST
+// POST - Crear admin
 export const postAdmin = async (req, res) => {
   const { user_name, password } = req.body;
 
   try {
-    // Hash de la contraseña
+    if (!user_name || !password) {
+      return res.status(400).json({ error: "Faltan campos obligatorios" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const { data, error } = await supabase
-      .from('admin')
+      .from("admin")
       .insert([{ user_name, password: hashedPassword }])
-      .select();
+      .select("admin_id, user_name");
 
     if (error) {
-      return res.status(500).json({ error: 'Error al registrar el administrador' });
+      console.error("Error supabase postAdmin:", error);
+      return res
+        .status(500)
+        .json({ error: "Error al registrar el administrador" });
     }
 
-    res.status(201).json({ message: 'Administrador registrado correctamente', data });
+    return res
+      .status(201)
+      .json({ message: "Administrador registrado correctamente", data });
   } catch (err) {
-    console.error('Error al registrar al administrador:', err.message);
-    res.status(500).json({ error: 'Error interno al registrar administrador' });
+    console.error("Error al registrar al administrador:", err.message);
+    return res
+      .status(500)
+      .json({ error: "Error interno al registrar administrador" });
   }
 };
 
-// GET
-export const getAdmins = async (req, res) => {
+// GET - Listar admins
+export const getAdmins = async (_req, res) => {
   try {
-    const { data, error } = await supabase.from('admin').select('*');
+    const { data, error } = await supabase
+      .from("admin")
+      .select("admin_id, user_name"); // no devolvemos password
 
     if (error) {
-      return res.status(500).json({ error: 'Error al obtener datos de administradores' });
+      console.error("Error supabase getAdmins:", error);
+      return res
+        .status(500)
+        .json({ error: "Error al obtener datos de administradores" });
     }
 
-    res.status(200).json(data);
+    return res.status(200).json(data);
   } catch (err) {
-    console.error('Error al obtener administradores:', err.message);
-    res.status(500).json({ error: 'Error interno al obtener administradores' });
+    console.error("Error al obtener administradores:", err.message);
+    return res
+      .status(500)
+      .json({ error: "Error interno al obtener administradores" });
   }
 };
 
-// GET id
+// GET id - Obtener admin por id
 export const getAdminById = async (req, res) => {
   const { id } = req.params;
 
   try {
     const { data, error } = await supabase
-      .from('admin')
-      .select('*')
-      .eq('admin_id', id);
+      .from("admin")
+      .select("admin_id, user_name")
+      .eq("admin_id", id)
+      .single();
 
     if (error) {
-      return res.status(500).json({ error: 'Error al obtener el administrador' });
+      console.error("Error supabase getAdminById:", error);
+      return res
+        .status(500)
+        .json({ error: "Error al obtener el administrador" });
     }
 
-    if (!data || data.length === 0) {
-      return res.status(404).json({ error: 'Administrador no encontrado' });
+    if (!data) {
+      return res.status(404).json({ error: "Administrador no encontrado" });
     }
 
-    res.status(200).json(data[0]);
+    return res.status(200).json(data);
   } catch (err) {
-    console.error('Error al obtener el administrador:', err.message);
-    res.status(500).json({ error: 'Error interno al obtener administrador' });
+    console.error("Error al obtener el administrador:", err.message);
+    return res
+      .status(500)
+      .json({ error: "Error interno al obtener administrador" });
   }
 };
 
-// PUT id
+// PUT id - Actualizar admin
 export const updateAdmin = async (req, res) => {
   const { id } = req.params;
   const { user_name, password } = req.body;
 
   try {
-    const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
+    const updateData = {};
 
-    const updateData = { user_name };
-    if (hashedPassword) updateData.password = hashedPassword;
+    if (user_name) updateData.user_name = user_name;
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateData.password = hashedPassword;
+    }
 
     const { data, error } = await supabase
-      .from('admin')
+      .from("admin")
       .update(updateData)
-      .eq('admin_id', id)
-      .select();
+      .eq("admin_id", id)
+      .select("admin_id, user_name")
+      .single();
 
     if (error) {
-      return res.status(500).json({ error: 'Error al actualizar el administrador' });
+      console.error("Error supabase updateAdmin:", error);
+      return res
+        .status(500)
+        .json({ error: "Error al actualizar el administrador" });
     }
 
-    if (!data || data.length === 0) {
-      return res.status(404).json({ error: 'Administrador no encontrado' });
+    if (!data) {
+      return res.status(404).json({ error: "Administrador no encontrado" });
     }
 
-    res.status(200).json({ message: 'Administrador actualizado correctamente', data });
+    return res
+      .status(200)
+      .json({ message: "Administrador actualizado correctamente", data });
   } catch (err) {
-    console.error('Error al actualizar administrador:', err.message);
-    res.status(500).json({ error: 'Error interno al actualizar administrador' });
+    console.error("Error al actualizar administrador:", err.message);
+    return res
+      .status(500)
+      .json({ error: "Error interno al actualizar administrador" });
   }
 };
 
-// DELETE
+// DELETE - Eliminar admin
 export const deleteAdmin = async (req, res) => {
   const { id } = req.params;
 
   try {
     const { data, error } = await supabase
-      .from('admin')
+      .from("admin")
       .delete()
-      .eq('admin_id', id)
-      .select();
+      .eq("admin_id", id)
+      .select("admin_id")
+      .single();
 
     if (error) {
-      return res.status(500).json({ error: 'Error al eliminar el administrador' });
+      console.error("Error supabase deleteAdmin:", error);
+      return res
+        .status(500)
+        .json({ error: "Error al eliminar el administrador" });
     }
 
-    if (!data || data.length === 0) {
-      return res.status(404).json({ error: 'Administrador no encontrado' });
+    if (!data) {
+      return res.status(404).json({ error: "Administrador no encontrado" });
     }
 
-    res.status(200).json({ message: 'Administrador eliminado correctamente' });
+    return res
+      .status(200)
+      .json({ message: "Administrador eliminado correctamente" });
   } catch (err) {
-    console.error('Error al eliminar administrador:', err.message);
-    res.status(500).json({ error: 'Error interno al eliminar administrador' });
+    console.error("Error al eliminar administrador:", err.message);
+    return res
+      .status(500)
+      .json({ error: "Error interno al eliminar administrador" });
   }
 };

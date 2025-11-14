@@ -37,7 +37,7 @@ export const createOrder = async (req, res) => {
   }
 };
 
-// Obtener todas las órdenes
+/*// Obtener todas las órdenes
 export const getOrders = async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -59,7 +59,50 @@ export const getOrders = async (req, res) => {
     console.error("Error al obtener órdenes:", error);
     res.status(500).json({ error: "Error interno al obtener órdenes." });
   }
+};*/
+
+/*
+export const getOrders = async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .select(
+        `
+        *,
+        client (first_name, last_name),
+        address:shipping_address_id (street, city, province)
+      `
+      )
+      .order("order_date", { ascending: false });
+    
+    // ...
+  } catch (error) {
+    // ...
+  }
 };
+*/
+
+// Obtener todas las ordenes simple
+export const getOrders = async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("order_id, client_id, order_date, amount, status")
+      .order("order_date", { ascending: false });
+
+    if (error) throw error;
+
+    // siempre devolvemos un array
+    return res.status(200).json(data || []);
+  } catch (error) {
+    console.error("Error al obtener órdenes:", error);
+    return res
+      .status(500)
+      .json({ error: "Error interno al obtener órdenes." });
+  }
+};
+
+
 
 // Obtener una orden por ID
 export const getOrderById = async (req, res) => {
