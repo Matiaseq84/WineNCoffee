@@ -68,11 +68,12 @@ function Cafe() {
             productos
               .filter((p) => p.category?.toLowerCase().includes("cafe"))
               .map((p) => (
+                
                 <article key={p.product_id} className="card glowable">
                   <div
                     className="card-img"
                     style={{
-                      backgroundImage: `url(${p.thumbnail || p.photo})`,
+                      backgroundImage: `url(${import.meta.env.VITE_API_URL}${p.thumbnail || p.photo})`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                     }}
