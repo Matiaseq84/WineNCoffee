@@ -9,6 +9,7 @@ import ProductDetail from "../pages/ProductDetail.jsx";
 import Login from "../pages/Login.jsx";
 import Register from "../pages/Register.jsx";
 import AdminPanel from "../pages/AdminPanel.jsx";
+import SellerPanel from "../pages/SellerPanel.jsx";
 
 
 import Navbar from "../components/Navbar.jsx";
@@ -39,7 +40,8 @@ function AppRoutes() {
         <Route path="/order/:orderId" element= {<OrderTracking />}/>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/admin" element={<AdminPanel />} />   {/*ruta para panel de admin*/}
+        <Route path="/seller" element={<SellerPanel />} /> {/*ruta para panel de vendedor*/}
       </Routes>
       <Footer />
     </Router>

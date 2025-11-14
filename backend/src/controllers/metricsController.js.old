@@ -1,0 +1,30 @@
+import { supabase } from "../config/db.js"; 
+
+export const getMetrics = async (_req, res) => {
+  try {
+    // KPI: totales reales
+    const [admins, products] = await Promise.all([
+      supabase.from("admin").select("admin_id", { count: "exact", head: true }),
+      supabase.from("product").select("product_id", { count: "exact", head: true })
+    ]);
+
+    const kpis = {
+      totalAdmins: admins.count ?? 0,
+      totalProducts: products.count ?? 0
+    };
+
+    //por ahora mock 
+    const salesSeries = [
+      { date: "2025-11-01", total: 12 },
+      { date: "2025-11-02", total: 18 },
+      { date: "2025-11-03", total: 9 },
+      { date: "2025-11-04", total: 21 },
+      { date: "2025-11-05", total: 15 },
+    ];
+
+    return res.json({ kpis, salesSeries });
+  } catch (err) {
+    console.error("getMetrics error:", err);
+    return res.status(500).json({ error: "No se pudieron obtener metricas" });
+  }
+};
