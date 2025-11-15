@@ -70,7 +70,7 @@ function Vino() {
                   <div
                     className="card-img"
                     style={{
-                      backgroundImage: `url(${p.thumbnail || p.photo})`,
+                      backgroundImage: `url(${import.meta.env.VITE_API_URL}${p.thumbnail || p.photo})`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                     }}
