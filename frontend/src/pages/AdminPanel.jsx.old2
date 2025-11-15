@@ -1,0 +1,76 @@
+import { useState } from "react";
+import AdminUsers from "../components/AdminUsers.jsx";
+import AdminProducts from "../components/AdminProducts.jsx";
+import AdminCharts from "../components/AdminCharts.jsx";
+import "./AdminPanel.css";
+
+function AdminPanel() {
+  const [tab, setTab] = useState("charts");
+
+  return (
+    <div className="admin-panel">
+      <aside className="admin-sidebar">
+        <div className="admin-sidebar__logo">
+          <span className="admin-sidebar__brand">AYKEN</span>
+          <span className="admin-sidebar__role">Administrador</span>
+        </div>
+
+        <nav className="admin-sidebar__nav">
+          <button
+            className={`admin-nav__item ${tab === "charts" ? "is-active" : ""}`}
+            onClick={() => setTab("charts")}
+          >
+            📊 Dashboard
+          </button>
+          <button
+            className={`admin-nav__item ${tab === "users" ? "is-active" : ""}`}
+            onClick={() => setTab("users")}
+          >
+            👤 Usuarios
+          </button>
+          <button
+            className={`admin-nav__item ${tab === "products" ? "is-active" : ""}`}
+            onClick={() => setTab("products")}
+          >
+            🛒 Productos
+          </button>
+        </nav>
+      </aside>
+
+      <main className="admin-main">
+        <header className="admin-main__header">
+          <div>
+            <h1 className="admin-main__title">
+              {tab === "charts" && "Panel de control"}
+              {tab === "users" && "Gestión de usuarios"}
+              {tab === "products" && "Gestión de productos"}
+            </h1>
+            <p className="admin-main__subtitle">
+              Vista {tab === "charts" ? "general de métricas" : "detallada"} para el rol administrador.
+            </p>
+          </div>
+        </header>
+
+        <section className="admin-main__content">
+          {tab === "charts" && (
+            <div className="admin-card admin-card--no-padding">
+              <AdminCharts />
+            </div>
+          )}
+          {tab === "users" && (
+            <div className="admin-card">
+              <AdminUsers />
+            </div>
+          )}
+          {tab === "products" && (
+            <div className="admin-card">
+              <AdminProducts />
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
+  );
+}
+
+export default AdminPanel;

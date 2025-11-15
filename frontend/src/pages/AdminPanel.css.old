@@ -1,0 +1,52 @@
+.admin-panel {
+  display: flex;
+  height: 100vh;
+  background-color: #fafafa;
+}
+
+.sidebar {
+  width: 220px;
+  background-color: #222;
+  color: #fff;
+  padding: 20px;
+}
+
+.sidebar h3 {
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  cursor: pointer;
+  padding: 8px 0;
+  transition: 0.2s;
+}
+
+.sidebar li:hover {
+  color: #8ac926;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+.main-content button {
+  background: #8ac926;
+  border: none;
+  padding: 10px 15px;
+  margin-right: 10px;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.main-content button:hover {
+  background: #6da41b;
+}

@@ -9,19 +9,64 @@ function AdminPanel() {
 
   return (
     <div className="admin-panel">
-      <aside className="sidebar">
-        <h3>Admin Menu</h3>
-        <ul>
-          <li onClick={() => setTab("charts")}>Gráficos</li>
-          <li onClick={() => setTab("users")}> Usuarios</li>
-          <li onClick={() => setTab("products")}>Productos</li>
-        </ul>
+      {/* COLUMNA BURDEOS DEL Figma */}
+      <aside className="admin-sidebar">
+        <h2 className="admin-sidebar__title">ADMIN MENU</h2>
+        {/*<div className="seller-sidebar__logo">
+          <span className="seller-sidebar__brand">LAST MILE</span>
+          <span className="seller-sidebar__role">Admin</span>
+        </div>*/}
+
+
+        <nav className="admin-sidebar__nav">
+          <button
+            className={`admin-nav__item ${tab === "charts" ? "is-active" : ""}`}
+            onClick={() => setTab("charts")}
+          >
+            Dashboard
+          </button>
+          <button
+            className={`admin-nav__item ${tab === "users" ? "is-active" : ""}`}
+            onClick={() => setTab("users")}
+          >
+            Usuarios
+          </button>
+          <button
+            className={`admin-nav__item ${tab === "products" ? "is-active" : ""}`}
+            onClick={() => setTab("products")}
+          >
+            Productos
+          </button>
+        </nav>
       </aside>
 
-      <main className="main-content">
-        {tab === "charts" && <AdminCharts />}
-        {tab === "users" && <AdminUsers />}
-        {tab === "products" && <AdminProducts />}
+      {/* FONDO MARRÓN + TARJETAS DORADAS */}
+      <main className="admin-main">
+        {tab === "charts" && (
+          <>
+            <div className="admin-metrics-row">
+              <div className="admin-metric-card">Ventas Totales</div>
+              <div className="admin-metric-card">Clientes Activos</div>
+            </div>
+
+            {/* Si querés, abajo de las tarjetas metemos tus gráficos reales */}
+            <div className="admin-charts-wrapper">
+              <AdminCharts />
+            </div>
+          </>
+        )}
+
+        {tab === "users" && (
+          <div className="admin-content-card">
+            <AdminUsers />
+          </div>
+        )}
+
+        {tab === "products" && (
+          <div className="admin-content-card">
+            <AdminProducts />
+          </div>
+        )}
       </main>
     </div>
   );
