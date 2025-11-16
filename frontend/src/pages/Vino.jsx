@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
+import { Link } from "react-router-dom";
+import ModalEdad from "../components/ModalEdad";
+import { getProducts } from "../services/productService"; // ⬅️ Importamos el service
 import "./vino.css";
 
 function Vino() {
@@ -7,12 +10,20 @@ function Vino() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Traer productos desde el backend
+  // Verificación de edad
+  const [mayorEdad, setMayorEdad] = useState(
+    localStorage.getItem("mayorEdad") === "true"
+  );
+
+  const handleAceptarEdad = () => {
+    setMayorEdad(true);
+  };
+
+  // 🛒 Traer productos usando el service
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const res = await fetch("http://localhost:3000/product");
-        const data = await res.json();
+        const data = await getProducts(); // ⬅️ Ahora usa el service
         setProductos(data);
       } catch (err) {
         console.error("Error al obtener vinos:", err);
@@ -39,6 +50,10 @@ function Vino() {
 
   return (
     <div className="vino-page">
+
+      {/* MODAL DE EDAD */}
+      {!mayorEdad && <ModalEdad onAceptar={handleAceptarEdad} />}
+
       {/* HERO */}
       <section className="hero-vino">
         <div className="hero-overlay" />
@@ -48,7 +63,7 @@ function Vino() {
         </div>
       </section>
 
-      {/* LISTADO CON SIDEBAR */}
+      {/* LISTADO */}
       <section className="vino-listado">
         <aside className="sidebar">
           <h3>Explorar por</h3>
@@ -65,26 +80,61 @@ function Vino() {
           {productos.length > 0 ? (
             productos
               .filter((p) => p.category?.toLowerCase().includes("vino"))
-              .map((p) => (
-                <article key={p.product_id} className="card glowable">
-                  <div
-                    className="card-img"
-                    style={{
-                      backgroundImage: `url(${import.meta.env.VITE_API_URL}${p.thumbnail || p.photo})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  />
-                  <h4 className="card-title">{p.name}</h4>
-                  <div className="card-price">${p.price}</div>
-                  <button
-                    className="btn-add glowable"
-                    onClick={() => addItem(p)}
+              .map((p) => {
+                const sinStock = p.stock === 0;
+                const pocasUnidades = p.stock > 0 && p.stock <= 5;
+
+                return (
+                  <Link
+                    key={p.product_id}
+                    to={`/product/${p.product_id}`}
+                    className="card-link-wrapper"
                   >
-                    Agregar al carrito
-                  </button>
-                </article>
-              ))
+                    <article className="card glowable">
+
+                      {/* Badge stock */}
+                      {sinStock && (
+                        <span className="badge sin-stock">SIN STOCK</span>
+                      )}
+                      {pocasUnidades && (
+                        <span className="badge pocas-unidades">
+                          Últimas unidades
+                        </span>
+                      )}
+
+                      <div
+                        className="card-img"
+                        style={{
+                          backgroundImage: `url(${import.meta.env.VITE_API_URL}${p.thumbnail || p.photo})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
+                      />
+
+                      <h4 className="card-title">{p.name}</h4>
+                      <div className="card-price">${p.price}</div>
+
+                      {/* Botón dinámico */}
+                      {sinStock ? (
+                        <button className="btn-disabled" disabled>
+                          Sin stock
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-add glowable"
+                          onClick={(e) => {
+                            e.preventDefault(); // evitar navegación
+                            e.stopPropagation();
+                            addItem(p);
+                          }}
+                        >
+                          Agregar al carrito
+                        </button>
+                      )}
+                    </article>
+                  </Link>
+                );
+              })
           ) : (
             <p>No hay vinos disponibles.</p>
           )}

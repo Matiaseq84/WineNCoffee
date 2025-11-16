@@ -1,0 +1,84 @@
+.edad-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.edad-modal {
+  position: relative;
+  background: #fff;
+  width: 420px;
+  padding: 35px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,.2);
+  color: black;
+}
+
+.edad-cerrar {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.edad-botones {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.btn-no, .btn-si {
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  border: 2px solid #2c0f18;
+}
+
+.btn-no {
+  background: #fff;
+  color: #2c0f18;
+}
+
+.btn-si {
+  background: #2c0f18;
+  color: white;
+}
+
+.newsletter-box {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.newsletter-box input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #aaa;
+  flex: 1;
+}
+
+.btn-ok {
+  background: #2c0f18;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+}
+
+.leyenda {
+  color: #a00;
+  font-weight: bold;
+  margin-top: 20px;
+}

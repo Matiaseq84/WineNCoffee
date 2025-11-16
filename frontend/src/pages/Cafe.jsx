@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
+import { Link } from "react-router-dom";
+import { getProducts } from "../services/productService";
 import "./cafe.css";
 
 function Cafe() {
@@ -7,12 +9,11 @@ function Cafe() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Trae productos desde el backend
+  // Traer productos con productService
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const res = await fetch("http://localhost:3000/product");
-        const data = await res.json();
+        const data = await getProducts();
         setProductos(data);
       } catch (err) {
         console.error("Error al obtener productos:", err);
@@ -67,24 +68,61 @@ function Cafe() {
           {productos.length > 0 ? (
             productos
               .filter((p) => p.category?.toLowerCase().includes("cafe"))
-              .map((p) => (
-                
-                <article key={p.product_id} className="card glowable">
-                  <div
-                    className="card-img"
-                    style={{
-                      backgroundImage: `url(${import.meta.env.VITE_API_URL}${p.thumbnail || p.photo})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  />
-                  <h4 className="card-title">{p.name}</h4>
-                  <div className="card-price">${p.price}</div>
-                  <button className="btn-add glowable" onClick={() => addItem(p)}>
-                    Agregar al carrito
-                  </button>
-                </article>
-              ))
+              .map((p) => {
+                const sinStock = p.stock === 0;
+                const pocasUnidades = p.stock > 0 && p.stock <= 5;
+
+                return (
+                  <Link
+                    key={p.product_id}
+                    to={`/product/${p.product_id}`}
+                    className="card-link-wrapper"
+                  >
+                    <article className="card glowable">
+
+                      {/* BADGES */}
+                      {sinStock && (
+                        <span className="badge sin-stock">SIN STOCK</span>
+                      )}
+                      {pocasUnidades && (
+                        <span className="badge pocas-unidades">
+                          Últimas unidades
+                        </span>
+                      )}
+
+                      <div
+                        className="card-img"
+                        style={{
+                          backgroundImage: `url(${import.meta.env.VITE_API_URL}${p.thumbnail || p.photo})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
+                      />
+
+                      <h4 className="card-title">{p.name}</h4>
+                      <div className="card-price">${p.price}</div>
+
+                      {/* BOTÓN */}
+                      {sinStock ? (
+                        <button className="btn-disabled" disabled>
+                          Sin stock
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-add glowable"
+                          onClick={(e) => {
+                            e.preventDefault(); // evita el Link
+                            e.stopPropagation();
+                            addItem(p);
+                          }}
+                        >
+                          Agregar al carrito
+                        </button>
+                      )}
+                    </article>
+                  </Link>
+                );
+              })
           ) : (
             <p>No hay productos disponibles.</p>
           )}

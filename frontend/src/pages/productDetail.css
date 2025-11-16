@@ -1,0 +1,78 @@
+.pd-container {
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.pd-card {
+  display: flex;
+  gap: 40px;
+  max-width: 1100px;
+  width: 100%;
+}
+
+.pd-img {
+  width: 450px;
+  height: 550px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,.2);
+}
+
+.pd-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pd-description {
+  font-size: 16px;
+  opacity: .8;
+}
+
+.pd-price {
+  font-size: 28px;
+  font-weight: bold;
+  color: #2c0f18;
+}
+
+.pd-quantity {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.pd-quantity button {
+  width: 35px;
+  height: 35px;
+  font-size: 20px;
+  border-radius: 8px;
+  border: 1px solid #aaa;
+  background: #fff;
+  cursor: pointer;
+}
+
+.pd-btn-add {
+  background: #2c0f18;
+  color: #fff;
+  font-size: 18px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.pd-btn-add:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.pd-loading,
+.pd-error {
+  text-align: center;
+  padding: 40px;
+  font-size: 20px;
+}

@@ -187,7 +187,7 @@ export const updateOrderStatus = async (req, res) => {
 
     if (error) throw error;
 
-    // ✅ Emitir actualización en tiempo real
+    // Emitir actualización en tiempo real
     io.emit("orderStatusUpdated", {
       orderId: id,
       newStatus: status,
