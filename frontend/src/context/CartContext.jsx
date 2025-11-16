@@ -47,26 +47,33 @@ export function CartProvider({ children }) {
 
   const getId = (obj) => obj.id ?? obj.product_id;
 
-  const addItem = (item) => {
-    setItems((prev) => {
-      const id = getId(item);
-      const found = prev.find((p) => getId(p) === id);
-      if (found) {
-        return prev.map((p) =>
-          getId(p) === id ? { ...p, qty: (p.qty || 1) + 1 } : p
-        );
-      }
-      return [
-        ...prev,
-        {
-          ...item,
-          id,
-          qty: item.qty || 1,
-          price: Number(item.price || 0),
-        },
-      ];
-    });
-  };
+  const addItem = (item, qty = 1) => {
+  setItems((prev) => {
+    const id = getId(item);
+    const found = prev.find((p) => getId(p) === id);
+
+    if (found) {
+      // si ya existe, sumamos la cantidad seleccionada
+      return prev.map((p) =>
+        getId(p) === id
+          ? { ...p, qty: (p.qty || 1) + qty }
+          : p
+      );
+    }
+
+    // si NO existe, lo agregamos con la cantidad elegida
+    return [
+      ...prev,
+      {
+        ...item,
+        id,
+        qty,
+        price: Number(item.price || 0),
+      },
+    ];
+  });
+};
+
 
   const removeItem = (id) =>
     setItems((prev) => prev.filter((p) => getId(p) !== id));
