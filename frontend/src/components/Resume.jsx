@@ -11,7 +11,7 @@ const Resume = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🔄 Detectar automáticamente si todos los pasos del checkout están completos
+  // Detectar automáticamente si todos los pasos del checkout están completos
   useEffect(() => {
     const payment = localStorage.getItem("paymentMethod");
     const userData = JSON.parse(localStorage.getItem("userData")) || {};
@@ -65,19 +65,19 @@ const Resume = () => {
       !cliente?.apellido ||
       !cliente?.email
     ) {
-      alert("⚠️ Faltan datos del cliente.");
+      alert(" Faltan datos del cliente.");
       return;
     }
     if (!direccion?.calle || !direccion?.ciudad || !direccion?.provincia) {
-      alert("⚠️ Faltan datos de la dirección.");
+      alert(" Faltan datos de la dirección.");
       return;
     }
     if (!metodoPago) {
-      alert("⚠️ Faltan los datos del método de pago.");
+      alert(" Faltan los datos del método de pago.");
       return;
     }
     if (items.length === 0) {
-      alert("⚠️ No hay productos en el carrito.");
+      alert(" No hay productos en el carrito.");
       return;
     }
 
@@ -144,18 +144,18 @@ const Resume = () => {
         <ul className="resumen-lista">
           {items.map((item) => (
             <li key={item.id}>
-  <div className="item-left">
+              <div className="item-left">
 
-    {/* MINIATURA */}
-    <img
-      className="resume-thumb"
-      src={
-        item.thumbnail?.startsWith("http")
-          ? item.thumbnail
-          : `http://localhost:3000/${item.thumbnail}`
-      }
-      alt={item.name || item.nombre}
-    />
+          {/* MINIATURA */}
+          <img
+            className="resume-thumb"
+            src={
+              item.thumbnail?.startsWith("http")
+                ? item.thumbnail
+                : `http://localhost:3000/${item.thumbnail}`
+            }
+            alt={item.name || item.nombre}
+          />
 
     <div className="item-info">
       <div className="item-title">{item.name}</div>
