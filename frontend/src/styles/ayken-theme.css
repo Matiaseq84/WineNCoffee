@@ -1,0 +1,43 @@
+:root {
+  /* TIPOGRAFIA GENERAL DEL PANEL figma */
+  --ayken-font: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* COLORES BASE - Figma */
+  --ayken-bg: #3B2A28;              /* fondo general oscuro */
+  --ayken-surface: #3B2A28;         /* tarjetas / fondos */
+  --ayken-surface-alt: #1f2937;     /* variante */
+  --ayken-border-subtle: #1f2933;
+
+  --ayken-admin-accent: #f97316;    /* acento admin  */
+  --ayken-admin-accent-soft: rgba(249, 115, 22, 0.12);
+
+  --ayken-seller-accent: #cfae70;   /* acento seller */
+  --ayken-seller-accent-soft: rgba(34, 197, 94, 0.12);
+
+  --ayken-text-main: #f9fafb;       /* texto principal */
+  --ayken-text-muted: #9ca3af;
+  --ayken-danger: #ef4444;
+}
+
+/* BASE PARA TODO EL FRONT AYKEN */
+body {
+  font-family: var(--ayken-font);
+  background-color: #020617; /* fondo de página bajo los paneles */
+  color: var(--ayken-text-main);
+  margin: 0;
+}
+
+/* Botones genericos */
+button {
+  font-family: var(--ayken-font);
+  border-radius: 999px;
+  border: none;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

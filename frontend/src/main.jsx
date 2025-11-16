@@ -4,6 +4,9 @@ import './index.css'
 import App from './App.jsx'
 import { CartProvider } from './context/CartContext.jsx'
 
+import "./styles/ayken-theme.css";
+
+
 createRoot(document.getElementById('root')).render(
   
   <StrictMode>
