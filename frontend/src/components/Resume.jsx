@@ -109,7 +109,7 @@ const Resume = () => {
       });
 
       if (data.success) {
-        alert("✅ ¡Compra confirmada con éxito!");
+        alert("¡Compra confirmada con éxito!");
         clear();
         localStorage.removeItem("userData");
         localStorage.removeItem("paymentMethod");
@@ -144,14 +144,30 @@ const Resume = () => {
         <ul className="resumen-lista">
           {items.map((item) => (
             <li key={item.id}>
-              <div className="item-left">
-                <div className="item-title">{item.name}</div>
-                <div className="item-qty">x{item.qty}</div>
-              </div>
-              <div className="item-right">
-                ${(Number(item.price) * (item.qty || 1)).toLocaleString()}
-              </div>
-            </li>
+  <div className="item-left">
+
+    {/* MINIATURA */}
+    <img
+      className="resume-thumb"
+      src={
+        item.thumbnail?.startsWith("http")
+          ? item.thumbnail
+          : `http://localhost:3000/${item.thumbnail}`
+      }
+      alt={item.name || item.nombre}
+    />
+
+    <div className="item-info">
+      <div className="item-title">{item.name}</div>
+      <div className="item-qty">x{item.qty}</div>
+    </div>
+  </div>
+
+  <div className="item-right">
+    ${(Number(item.price) * (item.qty || 1)).toLocaleString()}
+  </div>
+</li>
+
           ))}
         </ul>
       )}

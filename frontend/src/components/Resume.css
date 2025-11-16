@@ -1,3 +1,35 @@
+.resumen-compra {
+  color: black;
+}
+
+.resumen-lista li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.resume-thumb {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 10px;
+}
+
+/* Botones de abajo */
 .resumen-botones {
   display: flex;
   justify-content: space-between;

@@ -48,8 +48,15 @@ export default function Carrito() {
             items.map((it) => (
               <article key={it.id} className="cart-item">
                 <div className="cart-thumb">
-                  {it.img ? (
-                    <img src={it.img} alt={it.name || it.nombre} />
+                  {it.thumbnail ? (
+                    <img
+  src={
+    it.thumbnail.startsWith("http")
+      ? it.thumbnail
+      : `http://localhost:3000/${it.thumbnail}`
+  }
+  alt={it.name || it.nombre}
+/>
                   ) : (
                     <div className="thumb-placeholder" />
                   )}
