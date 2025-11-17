@@ -61,6 +61,32 @@ export const getProducts = async (req, res) => {
   }
 };
 
+// GET /product/search?name=xxx
+export const searchProducts = async (req, res) => {
+  const { name } = req.query;
+
+  if (!name) {
+    return res.status(400).json({ error: "Debe enviar el parámetro 'name'." });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("product")
+      .select("*")
+      .ilike("category", `%${name}%`);  // <-- BUSCA INSENSIBLE A MAYÚSCULAS
+
+    if (error) {
+      return res.status(500).json({ error: "Error al buscar productos" });
+    }
+
+    res.status(200).json(data);
+  } catch (err) {
+    console.error("Error en la búsqueda de productos:", err.message);
+    res.status(500).json({ error: "Error interno en la búsqueda" });
+  }
+};
+
+
 // GET por id
 export const getProductById = async (req, res) => {
   const { id } = req.params;

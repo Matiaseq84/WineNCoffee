@@ -1,4 +1,5 @@
 import "./Home.css";
+import SearchBar from "../components/SearchBar";
 
 function Home() {
   return (
@@ -13,7 +14,7 @@ function Home() {
         <div className="hero-strip">
           <h1>Bienvenido a Wine & Coffee</h1>
           <p>Disfrutá los mejores vinos y cafés directamente en tu casa</p>
-          <button className="btn-hero">Ver Productos</button>
+          <SearchBar />
         </div>
       </section>
 

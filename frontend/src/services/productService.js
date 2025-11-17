@@ -39,3 +39,12 @@ export const deleteProduct = async (id) => {
   if (!res.ok) throw new Error("Error al eliminar producto");
   return await res.json();
 };
+
+export const searchProducts = async (name) => {
+  const res = await fetch(`${API_URL}/product/search?name=${encodeURIComponent(name)}`);
+
+  if (!res.ok) throw new Error("Error al buscar productos");
+
+  return await res.json();
+};
+

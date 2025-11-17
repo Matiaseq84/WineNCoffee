@@ -1,22 +1,34 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import SearchBar from "./SearchBar"; 
 import "./navbar.css";
 
 function Navbar() {
   const [abierto, setAbierto] = useState(false);
   const { count } = useCart();
+  const location = useLocation();  
 
-  const alternar = () => setAbierto(v => !v);
+  const alternar = () => setAbierto((v) => !v);
   const cerrar = () => setAbierto(false);
+
+  const noEstoyEnHome = location.pathname !== "/";
 
   return (
     <header className="navbar">
       <div className="nav-container">
+
         <Link to="/" className="brand" onClick={cerrar}>
           <img src="/icono-blanco.png" alt="Wine & Coffee" className="brand-logo" />
           <span>Wine & Coffee</span>
         </Link>
+
+        {/* 🔍 SearchBar solo si NO estás en Home */}
+        {noEstoyEnHome && (
+          <div className="navbar-search">
+            <SearchBar />
+          </div>
+        )}
 
         <button
           className={`hamburger ${abierto ? "is-open" : ""}`}
