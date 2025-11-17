@@ -105,6 +105,7 @@ const Resume = () => {
         direccion: direccionAdaptada,
         carrito: items,
         metodoPago: { type: metodoPago, datos: datosMetodo },
+        shippingCost,
         total: finalTotal,
       });
 

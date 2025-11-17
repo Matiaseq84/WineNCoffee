@@ -5,9 +5,9 @@ import { sendOrderConfirmationEmail } from "../services/emailService.js";
 
 export const createCheckout = async (req, res) => {
   try {
-    const { cliente, direccion, carrito, metodoPago, total } = req.body;
+    const { cliente, direccion, carrito, metodoPago, shippingCost, total } = req.body;
 
-    console.log("🧾 Datos recibidos del frontend:", { cliente, direccion, carrito, metodoPago });
+    console.log("🧾 Datos recibidos del frontend:", { cliente, direccion, carrito, metodoPago, shippingCost });
 
     // ========================
     // 1 Insertar o reutilizar cliente existente
@@ -77,6 +77,7 @@ export const createCheckout = async (req, res) => {
           amount: total,
           status: "pending",
           shipping_address_id: newAddress.address_id,
+          shipping_cost: shippingCost,
         },
       ])
       .select()

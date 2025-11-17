@@ -134,7 +134,7 @@ const OrderTracking = () => {
 
       <div className="order-total">
         <p>Subtotal: ${order.subtotal?.toLocaleString("es-AR")}</p>
-        <p>Envío: {order.shipping_cost ? `$${order.shipping_cost}` : "Gratis"}</p>
+        <p>Envío: {order.shippingCost ? `$${order.shippingCost}` : "Gratis"}</p>
         <h3>
           Total: $
           {(

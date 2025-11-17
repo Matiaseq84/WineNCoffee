@@ -118,6 +118,7 @@ export const getOrderById = async (req, res) => {
         status,
         client:client_id(first_name, last_name, email),
         address:shipping_address_id(street, city, province, country),
+        shipping_cost,
         payment:payment(payment_method)
       `)
       .eq("order_id", parseInt(id))
@@ -157,6 +158,7 @@ export const getOrderById = async (req, res) => {
         qty: i.quantity,
       })),
       subtotal,
+      shippingCost: order.shipping_cost,
       total: subtotal,
     };
 
