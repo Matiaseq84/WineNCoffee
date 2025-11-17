@@ -1,22 +1,36 @@
+:root {
+  --vino: #6e0c2b;
+  --vino-oscuro: #2c0f18;
+  --dorado: #d4b97d;
+  --crema: #fff4e4;
+  --gris-borde: rgba(44,15,24,.15);
+}
+
+/* CONTENEDOR GENERAL */
 .confirmation-container {
   max-width: 900px;
   margin: 40px auto;
   background: #fff;
   padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border-radius: 16px;
+  border: 1px solid var(--gris-borde);
+  box-shadow: 0 8px 18px rgba(0,0,0,.06);
+  color: var(--vino-oscuro);
 }
 
 .confirmation-container h2 {
   text-align: center;
   margin-bottom: 25px;
-  color: #222;
+  color: var(--vino-oscuro);
+  font-size: 1.6rem;
+  font-weight: 900;
 }
 
+/* BLOQUES */
 .section-block {
-  margin-bottom: 25px;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 15px;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--gris-borde);
 }
 
 .section-header {
@@ -25,83 +39,170 @@
   align-items: center;
 }
 
+.section-header h3 {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--vino-oscuro);
+}
+
+/* BOTÓN EDITAR */
 .edit-btn {
   background: none;
-  border: none;
-  color: #0077cc;
+  border: 1px solid var(--vino);
+  color: var(--vino);
+  padding: 6px 12px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
+  transition: .2s ease;
 }
 
 .edit-btn:hover {
-  text-decoration: underline;
+  background: var(--vino);
+  color: #fff;
 }
 
+/* LISTA DE DATOS */
 .data-list {
   list-style: none;
   padding: 0;
-  margin-top: 10px;
-}
-
-.data-list li {
-  margin: 5px 0;
-  color: #333;
-}
-
-.edit-block .input-group {
-  margin-bottom: 10px;
-}
-
-.input-group label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 3px;
-}
-
-.input-group input {
-  width: 100%;
-  padding: 6px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.btn-cp {
-  margin-top: 10px;
-  background-color: #0077cc;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  cursor: pointer;
-}
-
-.btn-cp:hover {
-  background-color: #005fa3;
-}
-
-.envio-info {
-  color: #222;
-  margin-top: 5px;
-}
-
-.save-btn-wrapper {
-  text-align: right;
   margin-top: 15px;
 }
 
-.btn-save {
-  background-color: #2d7a32;
-  color: #fff;
+.data-list li {
+  margin: 6px 0;
+  color: var(--vino-oscuro);
+  font-size: 1rem;
+}
+
+/* FORMULARIO EN MODO EDICIÓN */
+.edit-block {
+  margin-top: 15px;
+}
+
+.edit-block .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: var(--vino-oscuro);
+}
+
+.input-group input,
+.edit-block select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(44,15,24,.25);
+  border-radius: 10px;
+  font-size: 1rem;
+  background: #fff;
+  transition: .2s ease;
+}
+
+.input-group input:focus,
+.edit-block select:focus {
+  border-color: var(--dorado);
+  box-shadow: 0 0 0 2px rgba(212,185,125,.25);
+  outline: none;
+}
+
+/* BOTÓN RE-CALCULAR ENVÍO */
+.btn-cp {
+  margin-top: 8px;
+  background: var(--dorado);
+  color: var(--vino-oscuro);
+  padding: 8px 14px;
+  border-radius: 10px;
   border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
   cursor: pointer;
+  font-weight: 700;
+}
+
+.btn-cp:hover {
+  filter: brightness(1.05);
+}
+
+.envio-info {
+  margin-top: 6px;
+  font-weight: 600;
+  color: var(--vino-oscuro);
+}
+
+/* TARJETA DE PAGO */
+.form-tarjeta {
+  background: var(--crema);
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px solid var(--gris-borde);
+  margin-top: 14px;
+}
+
+.tarjeta-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* BOTÓN GUARDAR */
+.btn-save {
+  margin-top: 18px;
+  background: var(--vino);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  transition: .2s ease;
 }
 
 .btn-save:hover {
-  background-color: #256628;
+  filter: brightness(1.12);
 }
 
-.resume-wrapper {
-  margin-top: 30px;
+/* MERCADOPAGO */
+.mercadopago-info {
+  background: var(--crema);
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px solid var(--gris-borde);
+  margin-top: 12px;
+}
+
+.mercadopago-info h4 {
+  margin-bottom: 8px;
+}
+
+.logos img {
+  width: 40px;
+  margin-right: 6px;
+}
+
+.mp-footer {
+  font-size: 0.9rem;
+  color: var(--vino-oscuro);
+  margin-top: 8px;
+}
+
+/* ANIMACIONES SUAVES */
+.fade-in {
+  animation: fadeIn .4s ease;
+}
+
+.slide-in {
+  animation: slideIn .3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

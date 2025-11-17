@@ -117,6 +117,22 @@
   max-width: 400px;
 }
 
+.navbar-checkout .nav-container {
+  justify-content: center !important;
+}
+
+.logo-centered {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Ocultar cualquier resto del menú */
+.navbar-checkout .menu,
+.navbar-checkout .hamburger,
+.navbar-checkout .navbar-search {
+  display: none !important;
+}
 
 .hamburger.is-open span:nth-child(1){ transform: translateY(8px) rotate(45deg); }
 .hamburger.is-open span:nth-child(2){ opacity: 0; }
