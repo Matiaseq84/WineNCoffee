@@ -1,6 +1,7 @@
 import express from 'express';
 import {
     getProducts, 
+    searchProducts,
     getProductById, 
     postProduct, 
     updateProduct, 
@@ -10,6 +11,8 @@ import {
 const router = express.Router();
 
 router.get('/', getProducts);
+
+router.get('/search', searchProducts);
 
 router.get('/:id', getProductById);
 

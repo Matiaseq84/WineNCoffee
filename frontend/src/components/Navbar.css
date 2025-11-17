@@ -109,6 +109,14 @@
   margin-left: 4px;
 }
 
+.navbar-search {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  margin: 0 20px;
+  max-width: 400px;
+}
+
 
 .hamburger.is-open span:nth-child(1){ transform: translateY(8px) rotate(45deg); }
 .hamburger.is-open span:nth-child(2){ opacity: 0; }
