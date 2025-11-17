@@ -1,4 +1,4 @@
-// src/pages/Checkout/CheckoutLayout.jsx
+
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import ResumenCompra from "../../components/Resume";

@@ -1,69 +1,96 @@
+:root {
+  --vino-oscuro: #2c0f18;
+  --dorado: #d4b97d;
+  --crema: #fff4e4;
+  --bg-claro: #faf8f4;
+}
+
+/* CONTENEDOR PRINCIPAL */
 .checkout-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #fafafa;
-  padding: 20px;
+  padding: 24px;
+  background: var(--bg-claro);
 }
 
+/* BARRA DE PASOS */
 .checkout-steps {
   display: flex;
   justify-content: center;
-  gap: 25px;
-  margin-bottom: 30px;
+  gap: 18px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
 }
 
 .step-link {
-  color: #555;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 10px 20px;
-  border-radius: 25px;
-  background-color: #e9ecef;
-  transition: all 0.3s ease;
+  padding: 10px 22px;
+  border-radius: 30px;
+  background: #fff;
+  border: 1px solid rgba(44,15,24,.2);
+  font-weight: 600;
+  color: var(--vino-oscuro);
+  transition: all 0.25s ease;
+  cursor: default;
 }
 
 .step-link.active {
-  background-color: #1976d2;
-  color: #fff;
-  font-weight: 600;
+  background: var(--dorado);
+  color: var(--vino-oscuro);
+  border-color: var(--dorado);
+  box-shadow: 0 0 10px rgba(212,185,125,.5);
 }
 
-.step-link:hover {
-  background-color: #1565c0;
-  color: #fff;
+.step-link:not(.active):hover {
+  filter: brightness(1.04);
 }
 
+/* CONTENIDO */
 .checkout-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: flex-start;
   gap: 40px;
   flex-wrap: wrap;
+  
+}
+
+/* COLUMNA PRINCIPAL */
+.checkout-main {
+  overflow-x: hidden;
 }
 
 .checkout-main {
   flex: 1;
-  background-color: white;
-  border-radius: 10px;
-  padding: 25px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  min-width: 320px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px;
+  border: 1px solid rgba(44,15,24,.12);
+  box-shadow: 0 8px 20px rgba(0,0,0,.06);
+  max-width: 720px;
+  min-width: 340px;
 }
 
+.checkout-main {
+  display: flex;
+  justify-content: center;
+}
+
+/* SIDEBAR */
 .checkout-sidebar {
   width: 320px;
-  background-color: white;
-  border-radius: 10px;
+  background: #fffefb;
+  border-radius: 14px;
   padding: 25px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0,0,0,.07);
+  box-shadow: 0 8px 20px rgba(0,0,0,.05);
 }
 
+/* RESPONSIVE */
 @media (max-width: 900px) {
   .checkout-content {
     flex-direction: column;
-    align-items: center;
+    gap: 24px;
   }
 
   .checkout-sidebar {
