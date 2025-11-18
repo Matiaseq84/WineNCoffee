@@ -26,29 +26,6 @@ Incluye un **panel de administrador** para gestionar productos y pedidos.
 - Nodemailer  
 - Jest + Supertest  
 
----
-
-## 📁 Estructura del Proyecto
-
-WINENCOFFEE-MAIN/
-│
-├── backend/
-│ ├── public/
-│ ├── src/
-│ ├── tests/
-│ ├── .env
-│ ├── app.js
-│ ├── package-lock.json
-│ ├── package.json
-│ └── vinos_cafe_productos.txt
-│
-├── frontend/
-│ ├── public/
-│ ├── src/
-│ ├── vite.config.js
-│ └── package.json
-│
-└── package.json (script global: npm run dev)
 
 
 ---
@@ -57,7 +34,6 @@ WINENCOFFEE-MAIN/
 
 ### 1️⃣ Clonar el repositorio
 
-```bash
 git clone https://github.com/Matiaseq84/WineNCoffee.git
 cd WineNCoffee
 2️⃣ Instalar dependencias
