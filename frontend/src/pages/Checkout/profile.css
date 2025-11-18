@@ -15,48 +15,56 @@ body {
 .profile-container {
   max-width: 900px;
   margin: auto;
-  display: grid;
-  gap: 26px;
   padding: 16px;
   box-sizing: border-box;
+  display: grid;
+  gap: 22px;
 }
 
 /* BLOQUES */
 .form-block {
-  background: var(--bg-amarillo);                 
+  background: var(--bg-amarillo);
   border-radius: 18px;
   padding: 26px;
   border: 1px solid var(--gris-borde);
   box-shadow: 0 6px 18px rgba(0,0,0,.05);
   display: flex;
   flex-direction: column;
-  gap: 20px;                         
+  gap: 20px;
   box-sizing: border-box;
 }
-
 
 /* TITULOS */
 .form-block h2 {
   font-weight: 900;
   color: var(--vino-oscuro);
-  margin-bottom: 18px;
+  margin-bottom: 10px;
   font-size: 1.35rem;
 }
 
-/* GRIDS DE INPUTS */
+/* CONTENEDOR DE FILA */
 .input-row {
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
-  max-width: 100%;
-  }
+  gap: 1rem;
+  box-sizing: border-box;
+}
 
+/* GRUPO INDIVIDUAL */
 .input-group {
-  flex: 1 1 280px;            
+  flex: 1 1 calc(50% - 1rem);   /* Dos por fila */
+  min-width: 240px;             /* No más chico que esto */
   display: flex;
   flex-direction: column;
   gap: 8px;
+  box-sizing: border-box;
 }
 
+.input-group input {
+  width: 100%;           /* Garantiza no exceder */
+  box-sizing: border-box; /* MUY IMPORTANTE */
+}
 
 /* LABEL */
 .input-group label {
@@ -91,6 +99,7 @@ body {
   font-weight: 800;
   color: var(--vino-oscuro);
   transition: 0.2s ease;
+  white-space: nowrap;
 }
 
 .btn-cp:hover {
@@ -139,16 +148,15 @@ body {
 
 /* RESPONSIVE */
 @media (max-width: 600px) {
+  .input-group {
+    flex: 1 1 100%;  /* Una columna en móvil */
+  }
+
   .profile-container {
     padding: 10px;
   }
 
   .form-block {
-    padding: 20px;
-    
-  }
-
-  .btn-next {
-    margin-top: 18px;
+    padding: 18px;
   }
 }
