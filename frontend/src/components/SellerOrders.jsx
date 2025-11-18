@@ -83,16 +83,16 @@ export default function SellerOrders() {
               </td>
               <td>
                 <button onClick={() => updateStatus(o.order_id, "pending")}>
-                  Pendiente
+                  🕓Pendiente
                 </button>
                 <button onClick={() => updateStatus(o.order_id, "paid")}>
-                  Pagado
+                  💳Pagado
                 </button>
                 <button onClick={() => updateStatus(o.order_id, "shipped")}>
-                  Enviado
+                  🚚Enviado
                 </button>
                 <button onClick={() => updateStatus(o.order_id, "cancelled")}>
-                  Cancelado
+                  ❌Cancelado
                 </button>
               </td>
             </tr>

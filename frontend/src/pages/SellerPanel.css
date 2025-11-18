@@ -25,9 +25,9 @@
 }
 
 .seller-sidebar__brand {
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-size: 1.5rem;
   text-transform: uppercase;
   color: var(--ayken-seller-accent);
 }
@@ -102,7 +102,7 @@
 }
 
 .seller-card {
-  background: var(--ayken-surface);
+  background: var(--ayken-surface-alt);
   border-radius: 1rem;
   padding: 1.1rem 1.25rem;
   border: 1px solid rgba(148, 163, 184, 0.2);
@@ -125,7 +125,7 @@
 
 .seller-card th {
   text-align: left;
-  color: var(--ayken-text-muted);
+  color: var(--ayken-text);
   font-weight: 500;
 }
 
