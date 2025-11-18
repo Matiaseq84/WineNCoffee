@@ -22,7 +22,8 @@
 /* BASE PARA TODO EL FRONT AYKEN */
 body {
   font-family: var(--ayken-font);
-  background-color: #020617; /* fondo de página bajo los paneles */
+  /*background-color: #020617; /* fondo de página bajo los paneles */
+  background-color: #2c0f18; /* fondo de página bajo los paneles */
   color: var(--ayken-text-main);
   margin: 0;
 }
