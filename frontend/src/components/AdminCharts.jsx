@@ -1,9 +1,3 @@
-//export default function AdminCharts() {
-//  return <div style={{padding:12, border:'1px dashed #ccc'}}>Charts OK ✅</div>;
-//}
-
-import { useEffect, useState } from "react";
-import api from "../services/api";
 import {
   LineChart,
   Line,
@@ -14,53 +8,42 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function AdminCharts() {
-  const [kpis, setKpis] = useState({ totalAdmins: 0, totalProducts: 0 });
-  const [series, setSeries] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await api.get("/metrics");
-        setKpis(data?.kpis || { totalAdmins: 0, totalProducts: 0 });
-        setSeries(data?.salesSeries || []);
-      } catch (error) {
-        console.warn("No se pudo cargar /metrics, usando datos de prueba:", error);
-        // Datos mock (muestran algo aunque no haya backend)
-        setKpis({ totalAdmins: 2, totalProducts: 5 });
-        setSeries([
-          { date: "2025-11-01", total: 12 },
-          { date: "2025-11-02", total: 18 },
-          { date: "2025-11-03", total: 9 },
-          { date: "2025-11-04", total: 21 },
-          { date: "2025-11-05", total: 15 },
-        ]);
-      }
-    })();
-  }, []);
+// Ahora recibe "data" como propiedad desde el padre (AdminPanel)
+export default function AdminCharts({ data }) {
+  
+  // Si no hay datos o el array está vacío, mostramos un mensaje o un gráfico vacío seguro
+  if (!data || data.length === 0) {
+    return <p style={{ textAlign: "center", padding: 20 }}>No hay datos de ventas para mostrar aún.</p>;
+  }
 
   return (
-    <div style={{ padding: 20 }}>
-      <div style={{ display: "flex", gap: 16, marginBottom: 16 }}>
-        <div className="card">
-          Admins: <b>{kpis.totalAdmins}</b>
-        </div>
-        <div className="card">
-          Productos: <b>{kpis.totalProducts}</b>
-        </div>
-      </div>
-
-      <div style={{ width: "100%", height: 320 }}>
-        <ResponsiveContainer>
-          <LineChart data={series}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Line dataKey="total" type="monotone" stroke="#007bff" />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+    <div style={{ width: "100%", height: 350 }}>
+      <ResponsiveContainer>
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+          <XAxis 
+            dataKey="date" 
+            tick={{ fontSize: 12 }} 
+            tickMargin={10}
+          />
+          <YAxis 
+            tick={{ fontSize: 12 }} 
+            tickFormatter={(value) => `$${value}`} // Formato moneda en eje Y
+          />
+          <Tooltip 
+            formatter={(value) => [`$${value}`, "Ventas"]} // Formato en el tooltip
+            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
+          />
+          <Line 
+            type="monotone" 
+            dataKey="total" 
+            stroke="#8884d8" 
+            strokeWidth={3}
+            dot={{ r: 4 }}
+            activeDot={{ r: 6 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }
