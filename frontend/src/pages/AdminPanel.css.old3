@@ -1,0 +1,124 @@
+/* Tipografia 
+INTER 20 REGULAR Y BOLD
+PLAYFAIR DISPLAY REGULAR 24
+    Colores
+#3B2A28 MARRON CAFE
+#CFAE70 AMARILLO CREMA
+#5A1F2E ROJO VINO
+
+*/
+
+.admin-panel {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+  background-color: #0e0b0b; /* borde exterior oscuro  */
+}
+
+/* ===== SIDEBAR BURDEOS ===== */
+
+.admin-sidebar {
+  background-color: #5A1F2E; /* burdeos */
+  /*color: #f3d28b;            /* dorado claro para el texto */
+  color: #CFAE70;            /* dorado claro para el texto */
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar__title {
+  margin: 0 0 40px;
+  font-family: "Playfair Display", serif;
+  /*font-family: "Georgia", "Times New Roman", serif;*/
+  font-size: 1.5rem;
+  letter-spacing: 0.1rem;
+}
+
+.admin-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-nav__item {
+  background: transparent;
+  border: none;
+  text-align: left;
+  color: #f3d28b;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 0.95rem;
+  padding: 6px 0;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.admin-nav__item.is-active {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* ===== MAIN MARRÓN ===== */
+
+.admin-main {
+  /*background-color: #2a1414; /* marrón oscuro como la maqueta */
+  background-color: #3B2A28; /* marrón oscuro como la maqueta */
+  padding: 60px 70px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Fila de tarjetas doradas (Ventas Totales / Clientes Activos) */
+
+.admin-metrics-row {
+  display: flex;
+  gap: 80px;
+}
+
+.admin-metric-card {
+  /*background-color: #e0b764; /* dorado/beige */
+  background-color: #CFAE70; /* dorado/beige */
+  color: #1f130a; /* texto oscuro */
+  border-radius: 8px;
+  width: 260px;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Helvetica", "Arial", sans-serif;
+  font-size: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+}
+
+/* Contenedor para gráficos o contenido extra en el dashboard */
+
+.admin-charts-wrapper {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: #221010;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
+/* Contenedores para Usuarios y Productos */
+
+.admin-content-card {
+  /*background-color: #221010;*/
+  background-color: #CFAE70;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+  /*color: #f5f5f5;*/ /* texto claro */
+  color:#1f130a /* texto oscuro */
+}
+
+.admin-content-card table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-content-card th,
+.admin-content-card td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 6px 8px;
+}

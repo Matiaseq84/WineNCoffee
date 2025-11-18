@@ -1,32 +1,30 @@
-// lee datos reales y sino hace un mock
+// src/controllers/metricsController.js
+import { getTotalAdmins } from "../services/adminService.js";
+import { getTotalProducts } from "../services/productService.js";
+import { getLastDaysSales, getTotalRevenue } from "../services/saleService.js";
 
 export const getMetrics = async (_req, res) => {
   try {
-    //modelos o servicios para obtener datos reales
-    // import { listAllAdmins } from "../services/adminService.js";
-    // import { listAllProducts } from "../services/productService.js";
+    // Ejecutamos todas las consultas en paralelo para velocidad
+    const [totalAdmins, totalProducts, salesSeries, totalRevenue] = await Promise.all([
+      getTotalAdmins(),       // Servicio creado anteriormente
+      getTotalProducts(),     // Servicio creado anteriormente
+      getLastDaysSales(7),    // Obtenemos los datos reales para el gráfico
+      getTotalRevenue()       // Total histórico de plata (opcional)
+    ]);
 
-    // const admins = await listAllAdmins();
-    // const products = await listAllProducts();
+    // KPI Object: Agregamos totalRevenue para mostrar "Ingresos Totales"
+    const kpis = { 
+        totalAdmins, 
+        totalProducts,
+        totalRevenue 
+    };
 
-    // por ahora devolvemos 0/0
-    const totalAdmins = 0;   // reemplazar consulta real
-    const totalProducts = 0; // lo mismo
-
-    const kpis = { totalAdmins, totalProducts };
-
-    // Serie temporal mock (hasta tener ordenes/ventas)
-    const salesSeries = [
-      { date: "2025-11-01", total: 12 },
-      { date: "2025-11-02", total: 18 },
-      { date: "2025-11-03", total: 9  },
-      { date: "2025-11-04", total: 21 },
-      { date: "2025-11-05", total: 15 },
-    ];
-
+    // salesSeries ya viene con el formato [{ date: "2025-11-18", total: 1500 }, ...]
     return res.json({ kpis, salesSeries });
+
   } catch (err) {
     console.error("getMetrics error:", err);
-    return res.status(500).json({ error: "No se pudieron obtener metricas" });
+    return res.status(500).json({ error: "Error al obtener métricas del dashboard" });
   }
 };
