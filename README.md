@@ -54,20 +54,19 @@ Crear archivo:
 
 📌 backend/.env
 
-ini
+
 Copiar código
-SUPABASE_URL=tu_url
-SUPABASE_KEY=tu_key
-JWT_SECRET=clave_secreta
-SMTP_USER=tu_correo
-SMTP_PASS=password
-PORT=3000
+SUPABASE_URL=https://kvgebjwnyqbkieklnrci.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2Z2ViandueXFia2lla2xucmNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwODkxMDksImV4cCI6MjA3NTY2NTEwOX0.BKVtFBmbcpqzwF1C0DALEaoQXZwnUs58S93BBq5Qfks
+EMAIL_USER=matiaseq@gmail.com
+EMAIL_PASS=jzmy xbwj zfpv uecf
+
 
 4️⃣ Ejecutar el proyecto completo
 
 
-bash
-Copiar código
+'''bash
+
 npm run dev
 
 🔗 Accesos:
