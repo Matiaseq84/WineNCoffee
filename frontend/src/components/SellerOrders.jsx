@@ -62,7 +62,7 @@ export default function SellerOrders() {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Cliente (ID)</th>
+            <th>Cliente</th>
             <th>Estado</th>
             <th>Importe</th>
             <th>Fecha</th>
@@ -73,7 +73,7 @@ export default function SellerOrders() {
           {orders.map((o) => (
             <tr key={o.order_id}>
               <td>{o.order_id}</td>
-              <td>{o.client_id}</td>
+              <td>{o.client_name || o.client_id}</td>
               <td>{o.status}</td>
               <td>{o.amount}</td>
               <td>

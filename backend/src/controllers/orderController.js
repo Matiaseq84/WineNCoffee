@@ -37,52 +37,65 @@ export const createOrder = async (req, res) => {
   }
 };
 
-/*// Obtener todas las órdenes
+// Obtener todas las ordenes con nombre de cliente
 export const getOrders = async (req, res) => {
   try {
-    const { data, error } = await supabase
+    // 1) Traemos las órdenes
+    const { data: orders, error: ordersError } = await supabase
       .from("orders")
-      .select(
-        `
-        *,
-        client:first_name,
-        client:last_name,
-        address:shipping_address_id(street, city, province)
-      `
-      )
+      .select("order_id, client_id, order_date, amount, status")
       .order("order_date", { ascending: false });
 
-    if (error) throw error;
+    if (ordersError) throw ordersError;
 
-    res.json(data);
+    if (!orders || orders.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    // 2) IDs de clientes únicos
+    const clientIds = [
+      ...new Set(orders.map((o) => o.client_id).filter((id) => id != null)),
+    ];
+
+    // 3) Traemos los clientes
+    const { data: clients, error: clientsError } = await supabase
+      .from("client") // nombre de la tabla segun tu CREATE TABLE
+      .select("client_id, first_name, last_name")
+      .in("client_id", clientIds);
+
+    if (clientsError) throw clientsError;
+
+    // 4) Mapa client_id -> cliente
+    const clientMap = new Map(
+      (clients || []).map((c) => [c.client_id, c])
+    );
+
+    // 5) Armamos la respuesta final
+    const formatted = orders.map((o) => {
+      const client = clientMap.get(o.client_id);
+      return {
+        order_id: o.order_id,
+        client_id: o.client_id,
+        client_name: client
+          ? `${client.first_name} ${client.last_name}`
+          : null,
+        order_date: o.order_date,
+        amount: o.amount,
+        status: o.status,
+      };
+    });
+
+    return res.status(200).json(formatted);
   } catch (error) {
     console.error("Error al obtener órdenes:", error);
-    res.status(500).json({ error: "Error interno al obtener órdenes." });
-  }
-};*/
-
-/*
-export const getOrders = async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from("orders")
-      .select(
-        `
-        *,
-        client (first_name, last_name),
-        address:shipping_address_id (street, city, province)
-      `
-      )
-      .order("order_date", { ascending: false });
-    
-    // ...
-  } catch (error) {
-    // ...
+    return res
+      .status(500)
+      .json({ error: "Error interno al obtener órdenes." });
   }
 };
-*/
 
-// Obtener todas las ordenes simple
+
+/*// Obtener todas las ordenes simple
 export const getOrders = async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -100,7 +113,7 @@ export const getOrders = async (req, res) => {
       .status(500)
       .json({ error: "Error interno al obtener órdenes." });
   }
-};
+};*/
 
 
 
