@@ -9,13 +9,13 @@ Incluye un **panel de administrador** para gestionar productos y pedidos.
 
 ## 🚀 Tecnologías Utilizadas
 
-### 🟦 **Frontend**
+### **Frontend**
 - React 
 - Vite  
 - React Router Dom    
 - CSS  
 
-### 🟩 **Backend**
+### **Backend**
 - Node.js  
 - Express  
 - Supabase (PostgreSQL)  
@@ -36,6 +36,7 @@ Incluye un **panel de administrador** para gestionar productos y pedidos.
 
 git clone https://github.com/Matiaseq84/WineNCoffee.git
 cd WineNCoffee
+
 2️⃣ Instalar dependencias
 Backend
 bash
@@ -47,6 +48,7 @@ bash
 Copiar código
 cd ../frontend
 npm install
+
 3️⃣ Configurar variables de entorno
 Crear archivo:
 
