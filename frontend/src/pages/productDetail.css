@@ -1,25 +1,34 @@
+/* CONTENEDOR GENERAL */
 .pd-container {
-  padding: 40px;
+  padding: 40px 20px;
   display: flex;
   justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+/* TARJETA PRINCIPAL */
 .pd-card {
   display: flex;
   gap: 40px;
   max-width: 1100px;
   width: 100%;
+  align-items: flex-start;
+  box-sizing: border-box;
 }
 
+/* IMAGEN DEL PRODUCTO */
 .pd-img {
+  flex-shrink: 0;
   width: 450px;
   height: 550px;
   background-size: cover;
   background-position: center;
   border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0,0,0,.2);
+  box-shadow: 0 0 20px rgba(0,0,0,0.15);
 }
 
+/* INFORMACIÓN */
 .pd-info {
   flex: 1;
   display: flex;
@@ -27,17 +36,21 @@
   gap: 20px;
 }
 
+/* DESCRIPCIÓN */
 .pd-description {
-  font-size: 16px;
-  opacity: .8;
+  font-size: 1rem;
+  opacity: 0.85;
+  line-height: 1.5;
 }
 
+/* PRECIO */
 .pd-price {
   font-size: 28px;
   font-weight: bold;
-  color: #2c0f18;
+  color: var(--vino-oscuro, #2c0f18);
 }
 
+/* CANTIDAD */
 .pd-quantity {
   display: flex;
   align-items: center;
@@ -45,24 +58,37 @@
 }
 
 .pd-quantity button {
-  width: 35px;
-  height: 35px;
-  font-size: 20px;
+  width: 38px;
+  height: 38px;
+  font-size: 22px;
   border-radius: 8px;
-  border: 1px solid #aaa;
+  border: 1px solid #bbb;
   background: #fff;
   cursor: pointer;
+  transition: 0.2s;
 }
 
+.pd-quantity button:hover {
+  background: #f5f5f5;
+}
+
+/* BOTÓN AGREGAR */
 .pd-btn-add {
-  background: #2c0f18;
+  background: var(--vino, #2c0f18);
   color: #fff;
   font-size: 18px;
-  padding: 12px 20px;
+  padding: 14px 20px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   margin-top: 10px;
+  transition: 0.25s;
+  width: 100%;
+  max-width: 260px;
+}
+
+.pd-btn-add:hover {
+  filter: brightness(1.1);
 }
 
 .pd-btn-add:disabled {
@@ -70,9 +96,60 @@
   cursor: not-allowed;
 }
 
+/* ESTADOS DE CARGA Y ERROR */
 .pd-loading,
 .pd-error {
   text-align: center;
   padding: 40px;
   font-size: 20px;
+}
+
+/* ------------------------------
+   RESPONSIVE DESIGN
+--------------------------------*/
+
+/* Tablets */
+@media (max-width: 900px) {
+  .pd-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .pd-img {
+    width: 100%;
+    max-width: 500px;
+    height: 420px;
+  }
+
+  .pd-info {
+    align-items: center;
+  }
+
+  .pd-btn-add {
+    max-width: 100%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 550px) {
+  .pd-container {
+    padding: 20px 10px;
+  }
+
+  .pd-img {
+    height: 360px;
+  }
+
+  .pd-card {
+    gap: 25px;
+  }
+
+  .pd-description {
+    font-size: 0.95rem;
+  }
+
+  .pd-price {
+    font-size: 24px;
+  }
 }
