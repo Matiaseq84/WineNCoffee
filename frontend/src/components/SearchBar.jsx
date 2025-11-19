@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { searchProducts } from "../services/productService";
-import "./SearchBar.css";
+import "./searchBar.css";
 
 function SearchBar() {
   const [query, setQuery] = useState("");

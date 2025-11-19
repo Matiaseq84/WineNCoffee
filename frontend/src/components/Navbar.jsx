@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import SearchBar from "./SearchBar"; 
-import "./navbar.css";
+import "./Navbar.css";
 
 function Navbar() {
   const [abierto, setAbierto] = useState(false);
