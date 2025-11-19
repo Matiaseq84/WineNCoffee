@@ -110,7 +110,7 @@ const Resume = () => {
       });
 
       if (data.success) {
-        alert("¡Compra confirmada con éxito!");
+        console.success("¡Compra confirmada con éxito!");
         clear();
         localStorage.removeItem("userData");
         localStorage.removeItem("paymentMethod");

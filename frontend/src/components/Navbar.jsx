@@ -13,13 +13,16 @@ function Navbar() {
   const cerrar = () => setAbierto(false);
 
   const isHome = location.pathname === "/";
-  const isCheckout = location.pathname.startsWith("/checkout");
+
+  // Detectar rutas de checkout Y order
+  const isCheckout = location.pathname.startsWith("/checkout") 
+                  || location.pathname.startsWith("/order");
 
   return (
     <header className={`navbar ${isCheckout ? "navbar-checkout" : ""}`}>
       <div className="nav-container">
 
-        {/* ⭐ Solo el logo centrado si estamos en checkout */}
+        {/* 🔥 SOLO LOGO CENTRADO si estamos en checkout o order */}
         {isCheckout ? (
           <div className="logo-centered">
             <Link to="/" className="brand" onClick={cerrar}>
@@ -35,7 +38,7 @@ function Navbar() {
               <span>Wine & Coffee</span>
             </Link>
 
-            {/* 🔍 SearchBar solo si NO estás en Home */}
+            {/* SearchBar solo si NO estás en Home */}
             {!isHome && (
               <div className="navbar-search">
                 <SearchBar />
