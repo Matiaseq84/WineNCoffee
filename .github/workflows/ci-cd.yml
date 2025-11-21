@@ -1,0 +1,43 @@
+name: CI/CD WineNCoffee
+
+on:
+  push:
+    branches:
+      - main
+      - devops-frontend-docker
+      - devops-frontend-ci-alcira
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  frontend-ci:
+    name: Frontend CI (build)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Usamos Node 22 para estar alineados con el Dockerfile del frontend
+          node-version: "22"
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      # Paso reservado para tests del frontend. Actualmente no hay pruebas configuradas;
+      # si 'npm test' falla se muestra un mensaje y el pipeline continúa
+      - name: Run frontend tests (placeholder)
+        working-directory: ./frontend
+        run: npm test || echo "Sin tests de frontend configurados" # Si se agregan pruebas de frontend, se puede reemplazar la línea por
+        #run: npm test
+        
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+
+
