@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { getOrderById } from "../services/orderService";
 import { io } from "socket.io-client";
-import "./OrderTracking.css";
+import "./orderTracking.css";
 
 const socket = io(import.meta.env.VITE_API_URL); // URL del backend
 
