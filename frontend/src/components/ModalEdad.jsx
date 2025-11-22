@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./ModalEdad.css";
+import "./modalEdad.css";
 
 export default function ModalEdad() {
   const [showModal, setShowModal] = useState(false);

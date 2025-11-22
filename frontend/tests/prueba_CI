@@ -1,0 +1,2 @@
+Este archivo es para probar el workflow de CI de Github Actions.
+La idea es que al pushear este archivo al repositorio corra el workflow frontend CI/CD
