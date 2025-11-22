@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { searchProducts } from "../services/productService";
-import "./searchBar.css";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import "./SearchBar.css";
 
 function SearchBar() {
   const [query, setQuery] = useState("");
@@ -88,7 +86,7 @@ function SearchBar() {
                   src={
                     item.thumbnail?.startsWith("http")
                       ? item.thumbnail
-                      : `${API_URL}/${item.thumbnail}`
+                      : `http://localhost:3000/${item.thumbnail}`
                   }
                   alt={item.name}
                 />
