@@ -1,3 +1,0 @@
-Este archivo es para probar el workflow de CI de Github Actions.
-La idea es que al pushear este archivo al repositorio corra el workflow backend CI/CD
-Agregamos el push de las imagenes a GHRC y probamos.
