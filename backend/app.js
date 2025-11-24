@@ -11,6 +11,7 @@ import checkout from "./src/routes/checkoutRoutes.js";
 import order from "./src/routes/orderRoutes.js";
 import metricsRoutes from "./src/routes/metricsRoutes.js";
 import authRoutes from "./src/routes/authRoutes.js";
+import sellerRoutes from "./src/routes/sellerRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -40,6 +41,7 @@ app.use("/checkout", checkout);
 app.use("/order", order);
 app.use("/metrics", metricsRoutes);
 app.use("/auth", authRoutes);
+app.use("/seller", sellerRoutes);
 
 // Archivos estáticos
 app.use(express.static("public"));
