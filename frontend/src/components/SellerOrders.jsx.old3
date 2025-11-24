@@ -4,21 +4,16 @@ import api from "../services/api";
 
 export default function SellerOrders() {
   const [orders, setOrders] = useState([]);
-  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
-  // --- Formulario de nuevo pedido ---
+  // Campos del pedido manual
   const [showForm, setShowForm] = useState(false);
-  const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({
-    client_id: "",
+    client_name: "",
     amount: "",
   });
-
-  // --- Clientes para el combo ---
-  const [clients, setClients] = useState([]);
-  const [loadingClients, setLoadingClients] = useState(false);
-  const [clientsError, setClientsError] = useState("");
+  const [creating, setCreating] = useState(false);
 
   // =========================
   //   CARGAR PEDIDOS
@@ -26,31 +21,14 @@ export default function SellerOrders() {
   const loadOrders = async () => {
     try {
       setErr("");
-      setLoadingOrders(true);
+      setLoading(true);
       const { data } = await api.get("/order"); // GET /order
       setOrders(data || []);
     } catch (e) {
       console.error("Error cargando pedidos:", e);
       setErr("No se pudieron cargar los pedidos.");
     } finally {
-      setLoadingOrders(false);
-    }
-  };
-
-  // =========================
-  //   CARGAR CLIENTES
-  // =========================
-  const loadClients = async () => {
-    try {
-      setClientsError("");
-      setLoadingClients(true);
-      const { data } = await api.get("/client"); // 👈 GET /client
-      setClients(data || []);
-    } catch (e) {
-      console.error("Error cargando clientes:", e);
-      setClientsError("No se pudieron cargar los clientes.");
-    } finally {
-      setLoadingClients(false);
+      setLoading(false);
     }
   };
 
@@ -59,29 +37,29 @@ export default function SellerOrders() {
   // =========================
   const createOrder = async (e) => {
     e.preventDefault();
-
-    if (!form.client_id || !form.amount) {
-      alert("Seleccioná un cliente e ingresá el importe.");
+    if (!form.client_name || !form.amount) {
+      alert("Completá todos los campos");
       return;
     }
 
     try {
       setCreating(true);
 
-      // Mandamos EXACTAMENTE lo que pide createOrder:
-      // { client_id, amount, shipping_address_id? }
+      // 👇 IMPORTANTÍSIMO: CAMPOS EXACTOS DEL BACKEND
       await api.post("/order", {
-        client_id: Number(form.client_id),
+        client_name: form.client_name,
         amount: Number(form.amount),
-        // shipping_address_id: null, // si querés mandarlo explícito
+        status: "pending",
       });
 
-      setForm({ client_id: "", amount: "" });
+      // Limpiar form
+      setForm({ client_name: "", amount: "" });
       setShowForm(false);
+
+      // Recargar pedidos
       await loadOrders();
     } catch (e) {
       console.error("Error creando pedido:", e);
-      console.error("Respuesta backend:", e.response?.data);
       alert("No se pudo crear el pedido.");
     } finally {
       setCreating(false);
@@ -93,28 +71,29 @@ export default function SellerOrders() {
   // =========================
   const updateStatus = async (id, status) => {
     try {
-      await api.put(`/order/${id}/status`, { status }); // /order/:id/status
+      await api.put(`/order/${id}/status`, { status });
       await loadOrders();
     } catch (e) {
       console.error("Error actualizando estado:", e);
-      alert("No se pudo actualizar el estado del pedido. Revisá el enum order_status.");
+      alert("No se pudo actualizar el estado del pedido.");
     }
   };
 
   useEffect(() => {
     loadOrders();
-    loadClients(); // cargamos clientes para el combo
   }, []);
 
   // =========================
-  //   RENDER
+  //   VISTAS
   // =========================
 
   return (
     <div>
       <h2>Pedidos</h2>
 
-      {/* Formulario de creación de pedido */}
+      {/* --------------------- */}
+      {/*   BOTÓN NUEVO PEDIDO  */}
+      {/* --------------------- */}
       <button
         style={{ marginBottom: 12 }}
         onClick={() => setShowForm(!showForm)}
@@ -122,6 +101,9 @@ export default function SellerOrders() {
         {showForm ? "Cancelar" : "Nuevo pedido"}
       </button>
 
+      {/* --------------------- */}
+      {/*   FORMULARIO MANUAL   */}
+      {/* --------------------- */}
       {showForm && (
         <form
           onSubmit={createOrder}
@@ -130,53 +112,24 @@ export default function SellerOrders() {
             display: "flex",
             gap: 8,
             flexWrap: "wrap",
-            alignItems: "center",
           }}
         >
-          {/* Combo de clientes */}
-          <div style={{ minWidth: 220 }}>
-            <label>
-              Cliente
-              <br />
-              {loadingClients ? (
-                <span>Cargando clientes...</span>
-              ) : clientsError ? (
-                <span style={{ color: "crimson" }}>{clientsError}</span>
-              ) : (
-                <select
-                  value={form.client_id}
-                  onChange={(e) =>
-                    setForm({ ...form, client_id: e.target.value })
-                  }
-                >
-                  <option value="">Seleccioná un cliente</option>
-                  {clients.map((c) => (
-                    <option key={c.client_id} value={c.client_id}>
-                      {c.first_name} {c.last_name} (ID: {c.client_id})
-                    </option>
-                  ))}
-                </select>
-              )}
-            </label>
-          </div>
+          <input
+            placeholder="Nombre del cliente"
+            value={form.client_name}
+            onChange={(e) =>
+              setForm({ ...form, client_name: e.target.value })
+            }
+          />
 
-          {/* Importe */}
-          <div>
-            <label>
-              Importe
-              <br />
-              <input
-                type="number"
-                min={0}
-                step="0.01"
-                placeholder="Importe total"
-                value={form.amount}
-                onChange={(e) =>
-                  setForm({ ...form, amount: e.target.value })
-                }
-              />
-            </label>
-          </div>
+          <input
+            type="number"
+            placeholder="Importe total"
+            value={form.amount}
+            min={0}
+            step="0.01"
+            onChange={(e) => setForm({ ...form, amount: e.target.value })}
+          />
 
           <button type="submit" disabled={creating}>
             {creating ? "Guardando..." : "Crear pedido"}
@@ -184,11 +137,14 @@ export default function SellerOrders() {
         </form>
       )}
 
-      {/* Lista de pedidos */}
-      {loadingOrders && <p>Cargando pedidos...</p>}
+      {/* --------------------- */}
+      {/*   LISTA DE PEDIDOS    */}
+      {/* --------------------- */}
+
+      {loading && <p>Cargando pedidos...</p>}
       {err && <p style={{ color: "crimson" }}>{err}</p>}
 
-      {!loadingOrders && !orders.length && !err && (
+      {!loading && orders.length === 0 && (
         <p>No hay pedidos por el momento.</p>
       )}
 
@@ -208,11 +164,12 @@ export default function SellerOrders() {
               <th>Acciones</th>
             </tr>
           </thead>
+
           <tbody>
             {orders.map((o) => (
               <tr key={o.order_id}>
                 <td>{o.order_id}</td>
-                <td>{o.client_name || o.client_id}</td>
+                <td>{o.client_name}</td>
                 <td>{o.status}</td>
                 <td>{o.amount}</td>
                 <td>
@@ -230,9 +187,7 @@ export default function SellerOrders() {
                   <button onClick={() => updateStatus(o.order_id, "shipped")}>
                     🚚Enviado
                   </button>
-                  <button
-                    onClick={() => updateStatus(o.order_id, "cancelled")}
-                  >
+                  <button onClick={() => updateStatus(o.order_id, "cancelled")}>
                     ❌Cancelado
                   </button>
                 </td>
