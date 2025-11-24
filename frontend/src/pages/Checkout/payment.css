@@ -86,4 +86,17 @@
   border: thin solid #6e0c2b;
   background-color: var(--dorado);
   padding: 1rem;
+  color: var(--vino);
+}
+
+.mensaje-error {
+  background: #ffe0e0;
+  border-left: 4px solid var(--vino);
+  color: var(--vino-oscuro);
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  animation: fadeIn 0.25s ease;
 }

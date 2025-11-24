@@ -5,6 +5,8 @@ import "./payment.css";
 function Payment() {
   const navigate = useNavigate();
   const [metodo, setMetodo] = useState("");
+  const [error, setError] = useState(""); // ⬅ Nuevo estado de error
+
   const [datosTarjeta, setDatosTarjeta] = useState({
     nombre: "",
     numero: "",
@@ -12,7 +14,6 @@ function Payment() {
     cvv: "",
   });
 
-  // Al cargar, recuperamos si había datos guardados
   useEffect(() => {
     const metodoGuardado = localStorage.getItem("paymentMethod");
     if (metodoGuardado) {
@@ -27,9 +28,9 @@ function Payment() {
   const handleMetodoChange = (e) => {
     const value = e.target.value;
     setMetodo(value);
+    setError(""); // Limpia el error al cambiar método
     localStorage.setItem("paymentMethod", value);
 
-    // Cargamos los datos de ese método si existen
     const datosGuardados = localStorage.getItem(`datosTarjeta_${value}`);
     if (datosGuardados) {
       setDatosTarjeta(JSON.parse(datosGuardados));
@@ -45,8 +46,10 @@ function Payment() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    setError("");
     const nuevosDatos = { ...datosTarjeta, [name]: value };
     setDatosTarjeta(nuevosDatos);
+
     if (metodo === "credito" || metodo === "debito") {
       localStorage.setItem(`datosTarjeta_${metodo}`, JSON.stringify(nuevosDatos));
     }
@@ -54,18 +57,19 @@ function Payment() {
 
   const handleNext = () => {
     if (!metodo) {
-      alert("Seleccioná un método de pago antes de continuar.");
+      setError("Seleccioná un método de pago antes de continuar.");
       return;
     }
 
     if (metodo === "credito" || metodo === "debito") {
       const { nombre, numero, vencimiento, cvv } = datosTarjeta;
       if (!nombre || !numero || !vencimiento || !cvv) {
-        alert("Completá todos los datos de la tarjeta antes de continuar.");
+        setError("Completá todos los datos de la tarjeta antes de continuar.");
         return;
       }
     }
 
+    setError("");
     navigate("/checkout/confirmation");
   };
 
@@ -100,6 +104,7 @@ function Payment() {
               ({metodo === "credito" ? "Crédito" : "Débito"})
             </span>
           </h3>
+
           <form>
             <label>Nombre del titular</label>
             <input
@@ -133,6 +138,7 @@ function Payment() {
                   required
                 />
               </div>
+
               <div>
                 <label>CVV</label>
                 <input
@@ -158,18 +164,22 @@ function Payment() {
           <p>
             <strong>Accedé a Cuotas sin Tarjeta</strong> para comprar ahora y pagar después.
           </p>
+
           <div className="logos">
             <img src="https://img.icons8.com/color/48/visa.png" alt="Visa" />
             <img src="https://img.icons8.com/color/48/mastercard.png" alt="Mastercard" />
             <img src="https://img.icons8.com/color/48/amex.png" alt="Amex" />
             <img src="https://img.icons8.com/color/48/mercado-pago.png" alt="Mercado Pago" />
           </div>
+
           <p className="mp-footer">
-            Te llevaremos a <strong>Mercado Pago</strong>.<br />
-            Si no tenés una cuenta, podés usar tu e-mail.
+            Te llevaremos a <strong>Mercado Pago</strong>.<br />Si no tenés una cuenta, podés usar tu e-mail.
           </p>
         </div>
       )}
+
+      {/* MENSAJE DE ERROR RENDERIZADO */}
+      {error && <div className="mensaje-error">{error}</div>}
 
       <button onClick={handleNext} className="btn-next">
         Continuar
