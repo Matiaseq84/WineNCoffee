@@ -29,7 +29,7 @@ export const sendOrderConfirmationEmail = async (to, orderDetails) => {
     )
     .join("");
 
-  const trackingUrl = `http://localhost:3000/order/${orderId}`;
+  const trackingUrl = `http://localhost:5173/order/${orderId}`;
 
   const mailOptions = {
     from: `"Wine & Coffee" <${process.env.EMAIL_USER}>`,
